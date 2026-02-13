@@ -11,7 +11,7 @@ import { STANDARD_SHIPS } from '@/shared/ships';
 import { getShipCoords } from '@/shared/coords';
 import SetupPanel from '@/ui/components/SetupPanel';
 import BoardSection from '@/ui/components/BoardSection';
-import Portrait from '@/ui/components/Portrait';
+import Portrait, { PortraitMood } from '@/ui/components/Portrait';
 import ShipSelector from '@/ui/components/ShipSelector';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
@@ -141,8 +141,15 @@ export default function Home() {
   const [aiThinking, setAiThinking] = useState(false);
   const [winner, setWinner] = useState<'batman' | 'joker' | null>(null);
   const [cursorCoord, setCursorCoord] = useState<Coord | null>(null);
+  const [placedCells, setPlacedCells] = useState<Set<string>>(new Set());
+  const [phaseTransitioning, setPhaseTransitioning] = useState(false);
+  const [playerMood, setPlayerMood] = useState<PortraitMood>('neutral');
+  const [enemyMood, setEnemyMood] = useState<PortraitMood>('neutral');
   const aiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const boomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const placedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const moodTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleSetupClickRef = useRef<(row: number, col: number) => void>(() => {});
   const handleCellClickRef = useRef<(row: number, col: number) => void>(() => {});
 
@@ -224,6 +231,26 @@ export default function Home() {
     previewValid = canPlaceShip(game.players[0].board, hoverCoord, shipDef.length, setupOrientation);
   }
 
+  const triggerPhaseTransition = () => {
+    if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
+    setPhaseTransitioning(true);
+    transitionTimeoutRef.current = setTimeout(() => {
+      setPhaseTransitioning(false);
+      transitionTimeoutRef.current = null;
+    }, 650);
+  };
+
+  const setMoodTemporarily = (side: 'player' | 'enemy', mood: PortraitMood, duration = 2000) => {
+    if (moodTimeoutRef.current) clearTimeout(moodTimeoutRef.current);
+    if (side === 'player') setPlayerMood(mood);
+    else setEnemyMood(mood);
+    moodTimeoutRef.current = setTimeout(() => {
+      if (side === 'player') setPlayerMood('neutral');
+      else setEnemyMood('neutral');
+      moodTimeoutRef.current = null;
+    }, duration);
+  };
+
   const resetState = () => {
     if (aiTimeoutRef.current !== null) {
       clearTimeout(aiTimeoutRef.current);
@@ -233,6 +260,18 @@ export default function Home() {
       clearTimeout(boomTimeoutRef.current);
       boomTimeoutRef.current = null;
     }
+    if (placedTimeoutRef.current !== null) {
+      clearTimeout(placedTimeoutRef.current);
+      placedTimeoutRef.current = null;
+    }
+    if (transitionTimeoutRef.current !== null) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+    if (moodTimeoutRef.current !== null) {
+      clearTimeout(moodTimeoutRef.current);
+      moodTimeoutRef.current = null;
+    }
     setShowBoom(false);
     setAiThinking(false);
     setWinner(null);
@@ -240,6 +279,10 @@ export default function Home() {
     setSetupOrientation('horizontal');
     setHoverCoord(null);
     setSelectedShipIndex(null);
+    setPlacedCells(new Set());
+    setPhaseTransitioning(false);
+    setPlayerMood('neutral');
+    setEnemyMood('neutral');
     setMessage('Place your ships to begin.');
   };
 
@@ -255,8 +298,17 @@ export default function Home() {
 
     try {
       const shipDef = STANDARD_SHIPS[activeShipIndex];
+      const coords = getShipCoords({ row, col }, shipDef.length, setupOrientation);
       const updatedGame = applyAction(game, { type: 'PLACE_SHIP', playerIndex: 0, shipIndex: activeShipIndex, start: { row, col }, orientation: setupOrientation });
       setGame(updatedGame);
+
+      const newPlaced = new Set(coords.map(c => `${c.row},${c.col}`));
+      setPlacedCells(newPlaced);
+      if (placedTimeoutRef.current) clearTimeout(placedTimeoutRef.current);
+      placedTimeoutRef.current = setTimeout(() => {
+        setPlacedCells(new Set());
+        placedTimeoutRef.current = null;
+      }, 550);
 
       const nextIndex = getNextUnplacedShipIndex(updatedGame, 0);
 
@@ -278,6 +330,7 @@ export default function Home() {
   const handleStartBattle = () => {
     if (!game || !allShipsPlaced) return;
     setCursorCoord(null);
+    triggerPhaseTransition();
     setGame(applyAction(game, { type: 'START_BATTLE' }));
     setMessage('Your turn! Click on enemy grid to shoot.');
   };
@@ -300,9 +353,12 @@ export default function Home() {
     if (lm?.outcome === 'sunk') {
       setMessage(`${pickRandom(BATMAN_SINK_LINES)} Sunk their ${lm.sunkShipName}!`);
       triggerBoom();
+      setMoodTemporarily('player', 'confident');
+      setMoodTemporarily('enemy', 'worried');
     } else if (lm?.outcome === 'hit') {
       const hitName = findShipNameAtCoord(coord, currentGame.players[1].ships);
       setMessage(hitName ? `${pickRandom(BATMAN_HIT_LINES)} Hit their ${hitName}!` : pickRandom(BATMAN_HIT_LINES));
+      setMoodTemporarily('player', 'confident');
     } else {
       setMessage(pickRandom(BATMAN_MISS_LINES));
     }
@@ -310,6 +366,9 @@ export default function Home() {
     if (currentGame.phase === 'finished') {
       setMessage(pickRandom(BATMAN_VICTORY_LINES));
       setWinner('batman');
+      setPlayerMood('victorious');
+      setEnemyMood('defeated');
+      triggerPhaseTransition();
       setGame(currentGame);
       return;
     }
@@ -325,12 +384,18 @@ export default function Home() {
         if (currentGame.phase === 'finished') {
           setMessage(pickRandom(JOKER_VICTORY_LINES));
           setWinner('joker');
+          setEnemyMood('victorious');
+          setPlayerMood('defeated');
+          triggerPhaseTransition();
         } else if (aiLm?.outcome === 'sunk') {
           setMessage(`${pickRandom(JOKER_SINK_LINES)} Sank your ${aiLm.sunkShipName}!`);
           triggerBoom();
+          setMoodTemporarily('enemy', 'confident');
+          setMoodTemporarily('player', 'worried');
         } else if (aiLm?.outcome === 'hit') {
           const hitShipName = findShipNameAtCoord(aiShot, currentGame.players[0].ships);
           setMessage(hitShipName ? `${pickRandom(JOKER_HIT_LINES)} Hit your ${hitShipName}!` : pickRandom(JOKER_HIT_LINES));
+          setMoodTemporarily('enemy', 'confident');
         } else {
           setMessage(pickRandom(JOKER_MISS_LINES));
         }
@@ -358,12 +423,12 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen p-8 game-wrapper${game ? ` phase-${game.phase}` : ''}`} style={{ background: 'var(--color-bg)' }}>
+    <div className={`min-h-screen p-8 game-wrapper${game ? ` phase-${game.phase}` : ''}${phaseTransitioning ? ' phase-transitioning' : ''}`} style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-4 mt-4 mb-8">
-          <Portrait src="/assets/theme/portraits/player.png" label="Batman" fallbackColor="#1e3a5f" />
+          <Portrait src="/assets/theme/portraits/player.png" label="Batman" fallbackColor="#1e3a5f" mood={playerMood} />
           <h1 className="text-3xl font-bold text-center">Gotham Battleship</h1>
-          <Portrait src="/assets/theme/portraits/enemy.png" label="Joker" fallbackColor="#2d1b4e" isEnemy />
+          <Portrait src="/assets/theme/portraits/enemy.png" label="Joker" fallbackColor="#2d1b4e" isEnemy mood={enemyMood} />
         </div>
 
         <div style={{ position: 'relative' }}>
@@ -414,6 +479,7 @@ export default function Home() {
                   onCellHover={isSetupActive ? (row, col) => setHoverCoord({ row, col }) : undefined}
                   onBoardLeave={isSetupActive ? () => setHoverCoord(null) : undefined}
                   cursorCoord={isSetupActive ? cursorCoord : null}
+                  placedCells={placedCells}
                 />
                 {game.phase === 'setup' && !allShipsPlaced && (
                   <ShipSelector
