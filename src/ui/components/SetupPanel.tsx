@@ -16,6 +16,10 @@ export type SetupPanelProps = {
   onToggleOrientation: () => void;
   showStartBattle: boolean;
   onStartBattle: () => void;
+  muted: boolean;
+  onToggleMute: () => void;
+  showUndo: boolean;
+  onUndo: () => void;
 };
 
 export default function SetupPanel({
@@ -30,6 +34,10 @@ export default function SetupPanel({
   onToggleOrientation,
   showStartBattle,
   onStartBattle,
+  muted,
+  onToggleMute,
+  showUndo,
+  onUndo,
 }: SetupPanelProps) {
   return (
     <div className="panel mb-6">
@@ -48,14 +56,29 @@ export default function SetupPanel({
             <option value="hard">Hard</option>
           </select>
         </div>
-        <button
-          data-testid="start-game"
-          onClick={onStartGame}
-          className="px-6 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-150"
-          style={{ background: gameStarted ? 'var(--state-hit)' : 'var(--bat-accent)', color: '#0a0e1a' }}
-        >
-          {gameStarted ? 'Restart' : 'Start Game'}
-        </button>
+        <div className="flex gap-2 items-center">
+          <button
+            onClick={onToggleMute}
+            className="px-3 py-2 rounded-lg font-bold transition-all duration-150"
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              color: muted ? 'var(--state-miss)' : 'var(--bat-accent)',
+              border: `1px solid ${muted ? 'var(--color-border)' : 'var(--bat-accent)'}`,
+            }}
+            title={muted ? 'Unmute sounds' : 'Mute sounds'}
+            aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
+          >
+            {muted ? '\u{1F507}' : '\u{1F50A}'}
+          </button>
+          <button
+            data-testid="start-game"
+            onClick={onStartGame}
+            className="px-6 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-150"
+            style={{ background: gameStarted ? 'var(--state-hit)' : 'var(--bat-accent)', color: '#0a0e1a' }}
+          >
+            {gameStarted ? 'Restart' : 'Start Game'}
+          </button>
+        </div>
       </div>
       <MessagePanel message={message} />
       {showOrientationToggle && (
@@ -80,6 +103,21 @@ export default function SetupPanel({
             </span>
             <span>{setupOrientation === 'horizontal' ? 'Horizontal' : 'Vertical'}</span>
             <kbd className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.08)', color: 'var(--bat-text)', border: '1px solid rgba(255,255,255,0.12)' }}>R</kbd>
+          </button>
+        </div>
+      )}
+      {showUndo && (
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={onUndo}
+            className="px-5 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-150"
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              color: 'var(--state-hit)',
+              border: '2px solid rgba(239, 68, 68, 0.4)',
+            }}
+          >
+            Undo Last Placement
           </button>
         </div>
       )}
