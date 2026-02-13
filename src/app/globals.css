@@ -50,7 +50,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-body::before {
+.game-wrapper {
+  position: relative;
+}
+
+.game-wrapper::after {
   content: '';
   position: fixed;
   bottom: 0;
@@ -63,7 +67,7 @@ body::before {
   background-size: auto 100%;
   opacity: 0.06;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 }
 
 /* Blueprint board container */
@@ -365,13 +369,13 @@ body::before {
 }
 
 /* ── Phase-adaptive skyline opacity ── */
-.phase-setup body::before {
+.phase-setup.game-wrapper::after {
   opacity: 0.08;
 }
-.phase-playing body::before {
+.phase-playing.game-wrapper::after {
   opacity: 0.04;
 }
-.phase-finished body::before {
+.phase-finished.game-wrapper::after {
   opacity: 0.10;
 }
 

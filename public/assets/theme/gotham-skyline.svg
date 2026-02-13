@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice">
   <defs>
     <linearGradient id="bldgShade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a2a3a"/>
-      <stop offset="100%" stop-color="#0f1a2a"/>
+      <stop offset="0%" stop-color="#4a6a8a"/>
+      <stop offset="100%" stop-color="#2a4a6a"/>
     </linearGradient>
   </defs>
   <g fill="url(#bldgShade)">
