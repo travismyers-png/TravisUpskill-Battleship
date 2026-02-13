@@ -228,9 +228,6 @@ body {
   max-width: 28rem;
   margin: 0 auto;
   font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .message-bubble::after {
   content: '';
