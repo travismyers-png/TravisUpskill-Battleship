@@ -6,7 +6,7 @@ import { canPlaceShip } from '@/engine/placement';
 import { getNextShot as getEasyShot } from '@/ai/easy';
 import { getNextShot as getMediumShot } from '@/ai/medium';
 import { getNextShot as getHardShot } from '@/ai/hard';
-import { GameState, Coord, Orientation, Ship } from '@/types/game';
+import { GameState, Board, Coord, Orientation, Ship } from '@/types/game';
 import { STANDARD_SHIPS } from '@/shared/ships';
 import { getShipCoords } from '@/shared/coords';
 import SetupPanel from '@/ui/components/SetupPanel';
@@ -15,10 +15,108 @@ import Portrait from '@/ui/components/Portrait';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 
-const formatBattleshipCoord = (coord: Coord): string => {
-  const rowLetter = String.fromCharCode(65 + coord.row);
-  return `${rowLetter}${coord.col + 1}`;
+const pickRandom = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+
+const BATMAN_HIT_LINES = [
+  'Direct hit!',
+  'Bullseye!',
+  'Gotham strikes!',
+  'Target acquired!',
+  'Justice!',
+];
+
+const BATMAN_MISS_LINES = [
+  'A tactical miss. Recalibrating.',
+  'Even the Bat misses sometimes.',
+  'The night is long. I\'ll find them.',
+  'Missed... but not for long.',
+  'Patience is part of the plan.',
+];
+
+const BATMAN_SINK_LINES = [
+  'Ship down!',
+  'Sunk!',
+  'Destroyed!',
+  'Target eliminated.',
+  'Done for!',
+];
+
+const BATMAN_VICTORY_LINES = [
+  'I am the night. I am Batman. I win.',
+  'Gotham is safe once more.',
+  'Justice prevails. Every. Single. Time.',
+  'The Dark Knight stands victorious.',
+  'Never challenge the Bat.',
+];
+
+const JOKER_HIT_LINES = [
+  'Joker tagged you!',
+  'Why so serious?',
+  'No joke!',
+  'Hahaha! Boom!',
+  'Ha! Got you!',
+];
+
+const JOKER_MISS_LINES = [
+  'Joker whiffed!',
+  'Splish splash!',
+  'Haha—missed?',
+  'Joker\'s shot went wide!',
+  'Not even close!'
+];
+
+const JOKER_SINK_LINES = [
+  'HAHAHA!',
+  'Down she goes!',
+  'One less toy!',
+  'Glub glub glub!',
+  'Take that!',
+];
+
+const JOKER_VICTORY_LINES = [
+  'HAHAHAHA! The Joker wins! Chaos reigns!',
+  'Why so serious, Batman? You LOST!',
+  'The Clown Prince of Crime is victorious!',
+  'Gotham belongs to the Joker now!',
+  'They said I was crazy... I WIN!',
+];
+
+type BattleStats = {
+  shots: number;
+  hits: number;
+  misses: number;
+  accuracy: number;
 };
+
+const computeStats = (board: Board): BattleStats => {
+  let hits = 0;
+  let misses = 0;
+  for (let r = 0; r < board.size; r++) {
+    for (let c = 0; c < board.size; c++) {
+      const cell = board.cells[r][c];
+      if (cell === 'hit') hits++;
+      else if (cell === 'miss') misses++;
+    }
+  }
+  const shots = hits + misses;
+  return { shots, hits, misses, accuracy: shots > 0 ? Math.round((hits / shots) * 100) : 0 };
+};
+
+function StatsSectionPanel({ stats, side }: { stats: BattleStats; side: 'batman' | 'joker' }) {
+  const label = side === 'batman' ? 'Batman' : 'Joker';
+  return (
+    <div className={`stats-section stats-${side}`}>
+      <h3 className={`stats-title ${side}`}>{label}</h3>
+      <div className="stats-grid">
+        <div className="stat-item"><span className="stat-value">{stats.shots}</span><span className="stat-label">Shots</span></div>
+        <div className="stat-item"><span className="stat-value">{stats.hits}</span><span className="stat-label">Hits</span></div>
+        <div className="stat-item"><span className="stat-value">{stats.misses}</span><span className="stat-label">Misses</span></div>
+        <div className="stat-item"><span className="stat-value">{stats.accuracy}%</span><span className="stat-label">Accuracy</span></div>
+      </div>
+    </div>
+  );
+}
+
 
 const findShipNameAtCoord = (coord: Coord, ships: Ship[]): string | null => {
   for (const ship of ships) {
@@ -148,19 +246,16 @@ export default function Home() {
   const handleSetupClick = useCallback((row: number, col: number) => {
     if (!game || game.phase !== 'setup' || allShipsPlaced || setupShipIndex === null) return;
 
-    const shipDef = STANDARD_SHIPS[setupShipIndex];
-
     try {
       const updatedGame = applyAction(game, { type: 'PLACE_SHIP', playerIndex: 0, shipIndex: setupShipIndex, start: { row, col }, orientation: setupOrientation });
       setGame(updatedGame);
 
-      const coordLabel = formatBattleshipCoord({ row, col });
       const nextIndex = getNextUnplacedShipIndex(updatedGame, 0);
 
       if (nextIndex === null) {
-        setMessage(`Placed ${shipDef.name} at ${coordLabel}. All ships placed! Click "Start Battle".`);
+        setMessage('All ships placed! Click "Start Battle".');
       } else {
-        setMessage(`Placed ${shipDef.name} at ${coordLabel}. Place: ${STANDARD_SHIPS[nextIndex].name} (length ${STANDARD_SHIPS[nextIndex].length})`);
+        setMessage(`Placed! Next: ${STANDARD_SHIPS[nextIndex].name} (${STANDARD_SHIPS[nextIndex].length})`);
       }
     } catch {
       setMessage("Can't place there");
@@ -193,17 +288,17 @@ export default function Home() {
     const lm = currentGame.lastMove;
     
     if (lm?.outcome === 'sunk') {
-      setMessage(`You sunk their ${lm.sunkShipName}!`);
+      setMessage(`${pickRandom(BATMAN_SINK_LINES)} Sunk their ${lm.sunkShipName}!`);
       triggerBoom();
     } else if (lm?.outcome === 'hit') {
       const hitName = findShipNameAtCoord(coord, currentGame.players[1].ships);
-      setMessage(hitName ? `Hit their ${hitName}!` : 'Hit!');
+      setMessage(hitName ? `${pickRandom(BATMAN_HIT_LINES)} Hit their ${hitName}!` : pickRandom(BATMAN_HIT_LINES));
     } else {
-      setMessage('Miss!');
+      setMessage(pickRandom(BATMAN_MISS_LINES));
     }
 
     if (currentGame.phase === 'finished') {
-      setMessage(`Batman wins! All enemy ships sunk!`);
+      setMessage(pickRandom(BATMAN_VICTORY_LINES));
       setWinner('batman');
       setGame(currentGame);
       return;
@@ -215,19 +310,19 @@ export default function Home() {
         const aiShot = getAIShot(currentGame, difficulty);
         currentGame = applyAction(currentGame, { type: 'SHOT', coord: aiShot });
         
-        const shotLabel = formatBattleshipCoord(aiShot);
         const aiLm = currentGame.lastMove;
 
         if (currentGame.phase === 'finished') {
-          setMessage(`Joker wins! All your ships sunk!`);
+          setMessage(pickRandom(JOKER_VICTORY_LINES));
           setWinner('joker');
         } else if (aiLm?.outcome === 'sunk') {
-          setMessage(`Joker sunk your ${aiLm.sunkShipName} at ${shotLabel}! Your turn.`);
+          setMessage(`${pickRandom(JOKER_SINK_LINES)} Sank your ${aiLm.sunkShipName}!`);
           triggerBoom();
         } else if (aiLm?.outcome === 'hit') {
-          setMessage(handleAiHitMessage(aiLm, shotLabel, currentGame.players[0].ships));
+          const hitShipName = findShipNameAtCoord(aiShot, currentGame.players[0].ships);
+          setMessage(hitShipName ? `${pickRandom(JOKER_HIT_LINES)} Hit your ${hitShipName}!` : pickRandom(JOKER_HIT_LINES));
         } else {
-          setMessage(`Joker missed at ${shotLabel}. Your turn!`);
+          setMessage(pickRandom(JOKER_MISS_LINES));
         }
 
         setGame(currentGame);
@@ -292,39 +387,43 @@ export default function Home() {
         />
 
         {game && (
-          <div className="flex justify-center gap-12">
-            <div className="w-[500px] flex flex-col items-center">
-              <BoardSection
-                testId="player-board"
-                title="The Batcave"
-                board={game.players[0].board}
-                ships={game.players[0].ships}
-                showShips={true}
-                onCellClick={handleSetupClick}
-                clickable={game.phase === 'setup' && !allShipsPlaced}
-                showShipsRemaining={game.phase !== 'setup'}
-                previewCoords={isSetupActive ? previewCoords : []}
-                previewValid={isSetupActive ? previewValid : false}
-                onCellHover={isSetupActive ? (row, col) => setHoverCoord({ row, col }) : undefined}
-                onBoardLeave={isSetupActive ? () => setHoverCoord(null) : undefined}
-                cursorCoord={isSetupActive ? cursorCoord : null}
-              />
+          <>
+            <div className="flex justify-center gap-12">
+              <div className="w-[500px] flex flex-col items-center">
+                <BoardSection
+                  testId="player-board"
+                  title="The Batcave"
+                  board={game.players[0].board}
+                  ships={game.players[0].ships}
+                  showShips={true}
+                  onCellClick={handleSetupClick}
+                  clickable={game.phase === 'setup' && !allShipsPlaced}
+                  showShipsRemaining={game.phase !== 'setup'}
+                  previewCoords={isSetupActive ? previewCoords : []}
+                  previewValid={isSetupActive ? previewValid : false}
+                  onCellHover={isSetupActive ? (row, col) => setHoverCoord({ row, col }) : undefined}
+                  onBoardLeave={isSetupActive ? () => setHoverCoord(null) : undefined}
+                  cursorCoord={isSetupActive ? cursorCoord : null}
+                />
+                {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[1].board)} side="batman" />}
+              </div>
+              <div className="w-[500px] flex flex-col items-center">
+                <BoardSection
+                  testId="enemy-board"
+                  title="Clown Cartel"
+                  board={game.players[1].board}
+                  ships={game.players[1].ships}
+                  showShips={false}
+                  onCellClick={handleCellClick}
+                  clickable={game.phase === 'playing' && game.currentPlayerIndex === 0}
+                  showShipsRemaining={game.phase !== 'setup'}
+                  isEnemy={true}
+                  cursorCoord={isPlayingPhase ? cursorCoord : null}
+                />
+                {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[0].board)} side="joker" />}
+              </div>
             </div>
-            <div className="w-[500px] flex flex-col items-center">
-              <BoardSection
-                testId="enemy-board"
-                title="Clown Cartel"
-                board={game.players[1].board}
-                ships={game.players[1].ships}
-                showShips={false}
-                onCellClick={handleCellClick}
-                clickable={game.phase === 'playing' && game.currentPlayerIndex === 0}
-                showShipsRemaining={game.phase !== 'setup'}
-                isEnemy={true}
-                cursorCoord={isPlayingPhase ? cursorCoord : null}
-              />
-            </div>
-          </div>
+          </>
         )}
       </div>
 
