@@ -18,11 +18,11 @@ type Difficulty = 'easy' | 'medium' | 'hard';
 const pickRandom = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
 const BATMAN_HIT_LINES = [
-  'Direct hit! Justice strikes!',
-  'The Dark Knight never misses.',
-  'Gotham sends its regards.',
-  'Target acquired and neutralized.',
-  'Another blow for justice!',
+  'Direct hit!',
+  'Bullseye!',
+  'Gotham strikes!',
+  'Target acquired!',
+  'Justice!',
 ];
 
 const BATMAN_MISS_LINES = [
@@ -35,10 +35,10 @@ const BATMAN_MISS_LINES = [
 
 const BATMAN_SINK_LINES = [
   'Ship down!',
-  'Sunk! The seas belong to the Bat.',
-  'Another vessel destroyed!',
+  'Sunk!',
+  'Destroyed!',
   'Target eliminated.',
-  'That ship is done for.',
+  'Done for!',
 ];
 
 const BATMAN_VICTORY_LINES = [
@@ -46,15 +46,15 @@ const BATMAN_VICTORY_LINES = [
   'Gotham is safe once more.',
   'Justice prevails. Every. Single. Time.',
   'The Dark Knight stands victorious.',
-  'This is what happens when you challenge the Bat.',
+  'Never challenge the Bat.',
 ];
 
 const JOKER_HIT_LINES = [
   'Joker tagged you!',
   'Why so serious?',
-  'Joker\'s aim is no joke!',
+  'No joke!',
   'Hahaha! Boom!',
-  'The Clown Prince strikes!',
+  'Ha! Got you!',
 ];
 
 const JOKER_MISS_LINES = [
@@ -68,9 +68,9 @@ const JOKER_MISS_LINES = [
 const JOKER_SINK_LINES = [
   'HAHAHA!',
   'Down she goes!',
-  'One less toy for the Bat!',
+  'One less toy!',
   'Glub glub glub!',
-  'That\'s what you get!',
+  'Take that!',
 ];
 
 const JOKER_VICTORY_LINES = [
@@ -78,7 +78,7 @@ const JOKER_VICTORY_LINES = [
   'Why so serious, Batman? You LOST!',
   'The Clown Prince of Crime is victorious!',
   'Gotham belongs to the Joker now!',
-  'And they said I was crazy... I\'m a WINNER!',
+  'They said I was crazy... I WIN!',
 ];
 
 type BattleStats = {
@@ -130,10 +130,6 @@ function StatsPanel({ game }: { game: GameState }) {
   );
 }
 
-const formatBattleshipCoord = (coord: Coord): string => {
-  const rowLetter = String.fromCharCode(65 + coord.row);
-  return `${rowLetter}${coord.col + 1}`;
-};
 
 const findShipNameAtCoord = (coord: Coord, ships: Ship[]): string | null => {
   for (const ship of ships) {
@@ -263,19 +259,16 @@ export default function Home() {
   const handleSetupClick = useCallback((row: number, col: number) => {
     if (!game || game.phase !== 'setup' || allShipsPlaced || setupShipIndex === null) return;
 
-    const shipDef = STANDARD_SHIPS[setupShipIndex];
-
     try {
       const updatedGame = applyAction(game, { type: 'PLACE_SHIP', playerIndex: 0, shipIndex: setupShipIndex, start: { row, col }, orientation: setupOrientation });
       setGame(updatedGame);
 
-      const coordLabel = formatBattleshipCoord({ row, col });
       const nextIndex = getNextUnplacedShipIndex(updatedGame, 0);
 
       if (nextIndex === null) {
-        setMessage(`Placed ${shipDef.name} at ${coordLabel}. All ships placed! Click "Start Battle".`);
+        setMessage('All ships placed! Click "Start Battle".');
       } else {
-        setMessage(`Placed ${shipDef.name} at ${coordLabel}. Place: ${STANDARD_SHIPS[nextIndex].name} (length ${STANDARD_SHIPS[nextIndex].length})`);
+        setMessage(`Placed! Next: ${STANDARD_SHIPS[nextIndex].name} (${STANDARD_SHIPS[nextIndex].length})`);
       }
     } catch {
       setMessage("Can't place there");
@@ -330,20 +323,19 @@ export default function Home() {
         const aiShot = getAIShot(currentGame, difficulty);
         currentGame = applyAction(currentGame, { type: 'SHOT', coord: aiShot });
         
-        const shotLabel = formatBattleshipCoord(aiShot);
         const aiLm = currentGame.lastMove;
 
         if (currentGame.phase === 'finished') {
           setMessage(pickRandom(JOKER_VICTORY_LINES));
           setWinner('joker');
         } else if (aiLm?.outcome === 'sunk') {
-          setMessage(`${pickRandom(JOKER_SINK_LINES)} Sank your ${aiLm.sunkShipName} at ${shotLabel}!`);
+          setMessage(`${pickRandom(JOKER_SINK_LINES)} Sank your ${aiLm.sunkShipName}!`);
           triggerBoom();
         } else if (aiLm?.outcome === 'hit') {
           const hitShipName = findShipNameAtCoord(aiShot, currentGame.players[0].ships);
-          setMessage(hitShipName ? `${pickRandom(JOKER_HIT_LINES)} Hit your ${hitShipName} at ${shotLabel}!` : `${pickRandom(JOKER_HIT_LINES)} Hit at ${shotLabel}!`);
+          setMessage(hitShipName ? `${pickRandom(JOKER_HIT_LINES)} Hit your ${hitShipName}!` : pickRandom(JOKER_HIT_LINES));
         } else {
-          setMessage(`${pickRandom(JOKER_MISS_LINES)} Missed at ${shotLabel}.`);
+          setMessage(pickRandom(JOKER_MISS_LINES));
         }
 
         setGame(currentGame);
