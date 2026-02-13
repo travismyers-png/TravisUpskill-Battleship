@@ -102,29 +102,16 @@ const computeStats = (board: Board): BattleStats => {
   return { shots, hits, misses, accuracy: shots > 0 ? Math.round((hits / shots) * 100) : 0 };
 };
 
-function StatsPanel({ game }: { game: GameState }) {
-  const playerStats = computeStats(game.players[1].board);
-  const jokerStats = computeStats(game.players[0].board);
-
+function StatsSectionPanel({ stats, side }: { stats: BattleStats; side: 'batman' | 'joker' }) {
+  const label = side === 'batman' ? 'Batman' : 'Joker';
   return (
-    <div className="stats-panel">
-      <div className="stats-section stats-batman">
-        <h3 className="stats-title batman">Batman</h3>
-        <div className="stats-grid">
-          <div className="stat-item"><span className="stat-value">{playerStats.shots}</span><span className="stat-label">Shots</span></div>
-          <div className="stat-item"><span className="stat-value">{playerStats.hits}</span><span className="stat-label">Hits</span></div>
-          <div className="stat-item"><span className="stat-value">{playerStats.misses}</span><span className="stat-label">Misses</span></div>
-          <div className="stat-item"><span className="stat-value">{playerStats.accuracy}%</span><span className="stat-label">Accuracy</span></div>
-        </div>
-      </div>
-      <div className="stats-section stats-joker">
-        <h3 className="stats-title joker">Joker</h3>
-        <div className="stats-grid">
-          <div className="stat-item"><span className="stat-value">{jokerStats.shots}</span><span className="stat-label">Shots</span></div>
-          <div className="stat-item"><span className="stat-value">{jokerStats.hits}</span><span className="stat-label">Hits</span></div>
-          <div className="stat-item"><span className="stat-value">{jokerStats.misses}</span><span className="stat-label">Misses</span></div>
-          <div className="stat-item"><span className="stat-value">{jokerStats.accuracy}%</span><span className="stat-label">Accuracy</span></div>
-        </div>
+    <div className={`stats-section stats-${side}`}>
+      <h3 className={`stats-title ${side}`}>{label}</h3>
+      <div className="stats-grid">
+        <div className="stat-item"><span className="stat-value">{stats.shots}</span><span className="stat-label">Shots</span></div>
+        <div className="stat-item"><span className="stat-value">{stats.hits}</span><span className="stat-label">Hits</span></div>
+        <div className="stat-item"><span className="stat-value">{stats.misses}</span><span className="stat-label">Misses</span></div>
+        <div className="stat-item"><span className="stat-value">{stats.accuracy}%</span><span className="stat-label">Accuracy</span></div>
       </div>
     </div>
   );
@@ -418,6 +405,7 @@ export default function Home() {
                   onBoardLeave={isSetupActive ? () => setHoverCoord(null) : undefined}
                   cursorCoord={isSetupActive ? cursorCoord : null}
                 />
+                {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[1].board)} side="batman" />}
               </div>
               <div className="w-[500px] flex flex-col items-center">
                 <BoardSection
@@ -432,9 +420,9 @@ export default function Home() {
                   isEnemy={true}
                   cursorCoord={isPlayingPhase ? cursorCoord : null}
                 />
+                {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[0].board)} side="joker" />}
               </div>
             </div>
-            {game.phase !== 'setup' && <StatsPanel game={game} />}
           </>
         )}
       </div>
