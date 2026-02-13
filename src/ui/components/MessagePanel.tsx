@@ -6,6 +6,6 @@ export type MessagePanelProps = {
 
 export default function MessagePanel({ message }: MessagePanelProps) {
   return (
-    <div data-testid="message" className="message-bubble text-center text-lg font-semibold mb-4">{message}</div>
+    <div data-testid="message" className="message-bubble text-center text-lg font-semibold mb-4" title={message}>{message}</div>
   );
 }
