@@ -12,6 +12,7 @@ import { getShipCoords } from '@/shared/coords';
 import SetupPanel from '@/ui/components/SetupPanel';
 import BoardSection from '@/ui/components/BoardSection';
 import Portrait from '@/ui/components/Portrait';
+import ShipSelector from '@/ui/components/ShipSelector';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -134,6 +135,7 @@ export default function Home() {
   const [message, setMessage] = useState('Select difficulty and start game');
   const [setupOrientation, setSetupOrientation] = useState<Orientation>('horizontal');
 
+  const [selectedShipIndex, setSelectedShipIndex] = useState<number | null>(null);
   const [hoverCoord, setHoverCoord] = useState<Coord | null>(null);
   const [showBoom, setShowBoom] = useState(false);
   const [aiThinking, setAiThinking] = useState(false);
@@ -153,8 +155,11 @@ export default function Home() {
     }, 1000);
   };
 
-  const setupShipIndex = game ? getNextUnplacedShipIndex(game, 0) : 0;
-  const allShipsPlaced = game?.phase === 'setup' && setupShipIndex === null;
+  const allShipsPlaced = game?.phase === 'setup' && getNextUnplacedShipIndex(game, 0) === null;
+
+  const activeShipIndex = game && selectedShipIndex !== null && game.players[0].ships[selectedShipIndex]?.coords.length === 0
+    ? selectedShipIndex
+    : null;
 
   const isSetupPhase = game?.phase === 'setup' && !allShipsPlaced;
 
@@ -213,8 +218,8 @@ export default function Home() {
   const isSetupActive = game?.phase === 'setup' && !allShipsPlaced;
   let previewCoords: Coord[] = [];
   let previewValid = false;
-  if (isSetupActive && hoverCoord && game && setupShipIndex !== null) {
-    const shipDef = STANDARD_SHIPS[setupShipIndex];
+  if (isSetupActive && hoverCoord && game && activeShipIndex !== null) {
+    const shipDef = STANDARD_SHIPS[activeShipIndex];
     previewCoords = getShipCoords(hoverCoord, shipDef.length, setupOrientation);
     previewValid = canPlaceShip(game.players[0].board, hoverCoord, shipDef.length, setupOrientation);
   }
@@ -234,34 +239,39 @@ export default function Home() {
     setCursorCoord(null);
     setSetupOrientation('horizontal');
     setHoverCoord(null);
+    setSelectedShipIndex(null);
     setMessage('Place your ships to begin.');
   };
 
   const startNewGame = () => {
     resetState();
     setGame(createNewGame());
-    setMessage(`Place: ${STANDARD_SHIPS[0].name} (length ${STANDARD_SHIPS[0].length})`);
+    setSelectedShipIndex(0);
+    setMessage('Select a ship and place it on the board.');
   };
 
   const handleSetupClick = useCallback((row: number, col: number) => {
-    if (!game || game.phase !== 'setup' || allShipsPlaced || setupShipIndex === null) return;
+    if (!game || game.phase !== 'setup' || allShipsPlaced || activeShipIndex === null) return;
 
     try {
-      const updatedGame = applyAction(game, { type: 'PLACE_SHIP', playerIndex: 0, shipIndex: setupShipIndex, start: { row, col }, orientation: setupOrientation });
+      const shipDef = STANDARD_SHIPS[activeShipIndex];
+      const updatedGame = applyAction(game, { type: 'PLACE_SHIP', playerIndex: 0, shipIndex: activeShipIndex, start: { row, col }, orientation: setupOrientation });
       setGame(updatedGame);
 
       const nextIndex = getNextUnplacedShipIndex(updatedGame, 0);
 
       if (nextIndex === null) {
-        setMessage('All ships placed! Click "Start Battle".');
+        setSelectedShipIndex(null);
+        setMessage(`Placed ${shipDef.name}! All ships placed! Click "Start Battle".`);
       } else {
-        setMessage(`Placed! Next: ${STANDARD_SHIPS[nextIndex].name} (${STANDARD_SHIPS[nextIndex].length})`);
+        setSelectedShipIndex(nextIndex);
+        setMessage(`Placed ${shipDef.name}! Select your next ship.`);
       }
     } catch {
       setMessage("Can't place there");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game, allShipsPlaced, setupShipIndex, setupOrientation]);
+  }, [game, allShipsPlaced, activeShipIndex, setupOrientation]);
 
   useEffect(() => { handleSetupClickRef.current = handleSetupClick; }, [handleSetupClick]);
 
@@ -405,6 +415,13 @@ export default function Home() {
                   onBoardLeave={isSetupActive ? () => setHoverCoord(null) : undefined}
                   cursorCoord={isSetupActive ? cursorCoord : null}
                 />
+                {game.phase === 'setup' && !allShipsPlaced && (
+                  <ShipSelector
+                    ships={game.players[0].ships}
+                    selectedShipIndex={selectedShipIndex}
+                    onSelectShip={setSelectedShipIndex}
+                  />
+                )}
                 {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[1].board)} side="batman" />}
               </div>
               <div className="w-[500px] flex flex-col items-center">
