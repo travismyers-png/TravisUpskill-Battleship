@@ -13,6 +13,7 @@ import SetupPanel from '@/ui/components/SetupPanel';
 import BoardSection from '@/ui/components/BoardSection';
 import Portrait, { PortraitMood } from '@/ui/components/Portrait';
 import ShipSelector from '@/ui/components/ShipSelector';
+import { useSoundEffects } from '@/ui/hooks/useSoundEffects';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -145,6 +146,10 @@ export default function Home() {
   const [phaseTransitioning, setPhaseTransitioning] = useState(false);
   const [playerMood, setPlayerMood] = useState<PortraitMood>('neutral');
   const [enemyMood, setEnemyMood] = useState<PortraitMood>('neutral');
+  const [setupHistory, setSetupHistory] = useState<GameState[]>([]);
+  const [selectedShipHistory, setSelectedShipHistory] = useState<number[]>([]);
+
+  const { muted, toggleMute, play: playSound } = useSoundEffects();
   const aiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const boomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const placedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -161,6 +166,17 @@ export default function Home() {
       boomTimeoutRef.current = null;
     }, 1000);
   };
+
+  const handleUndo = useCallback(() => {
+    if (setupHistory.length === 0 || !game || game.phase !== 'setup') return;
+    const prevGame = setupHistory[setupHistory.length - 1];
+    const prevShipIdx = selectedShipHistory[selectedShipHistory.length - 1];
+    setGame(prevGame);
+    setSetupHistory(prev => prev.slice(0, -1));
+    setSelectedShipHistory(prev => prev.slice(0, -1));
+    setSelectedShipIndex(prevShipIdx);
+    setMessage('Undid last placement. Select a ship to place.');
+  }, [setupHistory, selectedShipHistory, game]);
 
   const allShipsPlaced = game?.phase === 'setup' && getNextUnplacedShipIndex(game, 0) === null;
 
@@ -283,6 +299,8 @@ export default function Home() {
     setPhaseTransitioning(false);
     setPlayerMood('neutral');
     setEnemyMood('neutral');
+    setSetupHistory([]);
+    setSelectedShipHistory([]);
     setMessage('Place your ships to begin.');
   };
 
@@ -299,6 +317,8 @@ export default function Home() {
     try {
       const shipDef = STANDARD_SHIPS[activeShipIndex];
       const coords = getShipCoords({ row, col }, shipDef.length, setupOrientation);
+      setSetupHistory(prev => [...prev, game]);
+      setSelectedShipHistory(prev => [...prev, activeShipIndex]);
       const updatedGame = applyAction(game, { type: 'PLACE_SHIP', playerIndex: 0, shipIndex: activeShipIndex, start: { row, col }, orientation: setupOrientation });
       setGame(updatedGame);
 
@@ -353,19 +373,23 @@ export default function Home() {
     if (lm?.outcome === 'sunk') {
       setMessage(`${pickRandom(BATMAN_SINK_LINES)} Sunk their ${lm.sunkShipName}!`);
       triggerBoom();
+      playSound('sunk');
       setMoodTemporarily('player', 'confident');
       setMoodTemporarily('enemy', 'worried');
     } else if (lm?.outcome === 'hit') {
       const hitName = findShipNameAtCoord(coord, currentGame.players[1].ships);
       setMessage(hitName ? `${pickRandom(BATMAN_HIT_LINES)} Hit their ${hitName}!` : pickRandom(BATMAN_HIT_LINES));
+      playSound('hit');
       setMoodTemporarily('player', 'confident');
     } else {
       setMessage(pickRandom(BATMAN_MISS_LINES));
+      playSound('miss');
     }
 
     if (currentGame.phase === 'finished') {
       setMessage(pickRandom(BATMAN_VICTORY_LINES));
       setWinner('batman');
+      playSound('victory');
       setPlayerMood('victorious');
       setEnemyMood('defeated');
       triggerPhaseTransition();
@@ -384,20 +408,24 @@ export default function Home() {
         if (currentGame.phase === 'finished') {
           setMessage(pickRandom(JOKER_VICTORY_LINES));
           setWinner('joker');
+          playSound('defeat');
           setEnemyMood('victorious');
           setPlayerMood('defeated');
           triggerPhaseTransition();
         } else if (aiLm?.outcome === 'sunk') {
           setMessage(`${pickRandom(JOKER_SINK_LINES)} Sank your ${aiLm.sunkShipName}!`);
           triggerBoom();
+          playSound('sunk');
           setMoodTemporarily('enemy', 'confident');
           setMoodTemporarily('player', 'worried');
         } else if (aiLm?.outcome === 'hit') {
           const hitShipName = findShipNameAtCoord(aiShot, currentGame.players[0].ships);
           setMessage(hitShipName ? `${pickRandom(JOKER_HIT_LINES)} Hit your ${hitShipName}!` : pickRandom(JOKER_HIT_LINES));
+          playSound('hit');
           setMoodTemporarily('enemy', 'confident');
         } else {
           setMessage(pickRandom(JOKER_MISS_LINES));
+          playSound('miss');
         }
 
         setGame(currentGame);
@@ -459,6 +487,10 @@ export default function Home() {
           onToggleOrientation={toggleOrientation}
           showStartBattle={!!allShipsPlaced}
           onStartBattle={handleStartBattle}
+          muted={muted}
+          onToggleMute={toggleMute}
+          showUndo={!!game && game.phase === 'setup' && setupHistory.length > 0}
+          onUndo={handleUndo}
         />
 
         {game && (
