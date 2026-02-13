@@ -17,6 +17,7 @@ export type BoardSectionProps = {
   onBoardLeave?: () => void;
   isEnemy?: boolean;
   cursorCoord?: Coord | null;
+  placedCells?: Set<string>;
 };
 
 export default function BoardSection({
@@ -34,6 +35,7 @@ export default function BoardSection({
   onBoardLeave,
   isEnemy = false,
   cursorCoord,
+  placedCells,
 }: BoardSectionProps) {
   return (
     <div data-testid={testId}>
@@ -55,6 +57,7 @@ export default function BoardSection({
         onBoardLeave={onBoardLeave}
         isEnemy={isEnemy}
         cursorCoord={cursorCoord}
+        placedCells={placedCells}
       />
     </div>
   );
@@ -83,6 +86,7 @@ function Board({
   onBoardLeave,
   isEnemy = false,
   cursorCoord,
+  placedCells,
 }: {
   board: { size: number; cells: string[][] };
   ships: { name?: string; coords: Coord[] }[];
@@ -95,6 +99,7 @@ function Board({
   onBoardLeave?: () => void;
   isEnemy?: boolean;
   cursorCoord?: Coord | null;
+  placedCells?: Set<string>;
 }) {
   const CELL_SIZE = 32; // 2rem = 32px
   const INSET = 3; // px inset so sprites don't touch grid lines
@@ -178,7 +183,7 @@ function Board({
             return (
               <div
                 key={`ship-sprite-${idx}`}
-                className={isSunk ? 'sprite-sunk' : undefined}
+                className={`${isSunk ? 'sprite-sunk' : ''}${placedCells && ship.coords.some(c => placedCells.has(`${c.row},${c.col}`)) ? ' ship-sprite-just-placed' : ''}`.trim() || undefined}
                 style={{
                   position: 'absolute',
                   left: leftPx,
@@ -235,6 +240,9 @@ function Board({
                 content = '•';
               } else if (cell === 'ship' && showShips) {
                 cellClass += ' bp-cell-ship';
+                if (placedCells?.has(`${rowIndex},${colIndex}`)) {
+                  cellClass += ' bp-cell-just-placed';
+                }
               }
 
               const isPreview = previewSet.has(`${rowIndex},${colIndex}`);
