@@ -253,7 +253,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen p-8${game ? ` phase-${game.phase}` : ''}`} style={{ background: 'var(--color-bg)' }}>
+    <div className={`min-h-screen p-8 game-wrapper${game ? ` phase-${game.phase}` : ''}`} style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-4 mt-4 mb-8">
           <Portrait src="/assets/theme/portraits/player.png" label="Batman" fallbackColor="#1e3a5f" />

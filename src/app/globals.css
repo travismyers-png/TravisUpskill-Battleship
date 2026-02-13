@@ -50,6 +50,26 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.game-wrapper {
+  position: relative;
+}
+
+.game-wrapper::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  background-image: url('/assets/theme/gotham-skyline.svg');
+  background-position: bottom center;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* Blueprint board container */
 .bp-board {
   background: var(--bp-bg);
@@ -346,6 +366,17 @@ body {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ── Phase-adaptive skyline opacity ── */
+.phase-setup.game-wrapper::after {
+  opacity: 0.08;
+}
+.phase-playing.game-wrapper::after {
+  opacity: 0.04;
+}
+.phase-finished.game-wrapper::after {
+  opacity: 0.10;
 }
 
 /* ── Phase mood: Setup (planning / blueprint glow) ── */
