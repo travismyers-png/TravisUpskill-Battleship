@@ -6,7 +6,7 @@ import { canPlaceShip } from '@/engine/placement';
 import { getNextShot as getEasyShot } from '@/ai/easy';
 import { getNextShot as getMediumShot } from '@/ai/medium';
 import { getNextShot as getHardShot } from '@/ai/hard';
-import { GameState, Coord, Orientation } from '@/types/game';
+import { GameState, Coord, Orientation, Ship } from '@/types/game';
 import { STANDARD_SHIPS } from '@/shared/ships';
 import { getShipCoords } from '@/shared/coords';
 import SetupPanel from '@/ui/components/SetupPanel';
@@ -20,6 +20,15 @@ const formatBattleshipCoord = (coord: Coord): string => {
   return `${rowLetter}${coord.col + 1}`;
 };
 
+const findShipNameAtCoord = (coord: Coord, ships: Ship[]): string | null => {
+  for (const ship of ships) {
+    for (const c of ship.coords) {
+      if (c.row === coord.row && c.col === coord.col) return ship.name;
+    }
+  }
+  return null;
+};
+
 
 export default function Home() {
   const [game, setGame] = useState<GameState | null>(null);
@@ -29,6 +38,7 @@ export default function Home() {
 
   const [hoverCoord, setHoverCoord] = useState<Coord | null>(null);
   const [showBoom, setShowBoom] = useState(false);
+  const [aiThinking, setAiThinking] = useState(false);
   const [winner, setWinner] = useState<'batman' | 'joker' | null>(null);
   const [cursorCoord, setCursorCoord] = useState<Coord | null>(null);
   const aiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -121,6 +131,7 @@ export default function Home() {
       boomTimeoutRef.current = null;
     }
     setShowBoom(false);
+    setAiThinking(false);
     setWinner(null);
     setCursorCoord(null);
     setSetupOrientation('horizontal');
@@ -185,7 +196,8 @@ export default function Home() {
       setMessage(`You sunk their ${lm.sunkShipName}!`);
       triggerBoom();
     } else if (lm?.outcome === 'hit') {
-      setMessage('Hit!');
+      const hitName = findShipNameAtCoord(coord, currentGame.players[1].ships);
+      setMessage(hitName ? `Hit their ${hitName}!` : 'Hit!');
     } else {
       setMessage('Miss!');
     }
@@ -197,6 +209,7 @@ export default function Home() {
       return;
     }
 
+    setAiThinking(true);
     aiTimeoutRef.current = setTimeout(() => {
       if (currentGame.phase === 'playing' && currentGame.currentPlayerIndex === 1) {
         const aiShot = getAIShot(currentGame, difficulty);
@@ -212,13 +225,14 @@ export default function Home() {
           setMessage(`Joker sunk your ${aiLm.sunkShipName} at ${shotLabel}! Your turn.`);
           triggerBoom();
         } else if (aiLm?.outcome === 'hit') {
-          setMessage(`Joker hit your ship at ${shotLabel}! Your turn.`);
+          setMessage(handleAiHitMessage(aiLm, shotLabel, currentGame.players[0].ships));
         } else {
           setMessage(`Joker missed at ${shotLabel}. Your turn!`);
         }
 
         setGame(currentGame);
       }
+      setAiThinking(false);
       aiTimeoutRef.current = null;
     }, 500);
 
@@ -250,6 +264,16 @@ export default function Home() {
         <div style={{ position: 'relative' }}>
           {showBoom && (
             <div className="boom-pop" aria-live="polite">BOOM!</div>
+          )}
+          {aiThinking && (
+            <div className="ai-thinking" aria-live="polite">
+              <span className="ai-thinking-dots">
+                <span className="ai-thinking-dot" />
+                <span className="ai-thinking-dot" />
+                <span className="ai-thinking-dot" />
+              </span>
+              Joker is scheming
+            </div>
           )}
         </div>
 
