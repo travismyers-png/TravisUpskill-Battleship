@@ -14,7 +14,6 @@ import BoardSection from '@/ui/components/BoardSection';
 import Portrait, { PortraitMood } from '@/ui/components/Portrait';
 import ShipSelector from '@/ui/components/ShipSelector';
 import { useSoundEffects } from '@/ui/hooks/useSoundEffects';
-import ParticleCanvas, { useParticleEffect } from '@/ui/components/ParticleEffect';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -151,7 +150,6 @@ export default function Home() {
   const [selectedShipHistory, setSelectedShipHistory] = useState<number[]>([]);
 
   const { muted, toggleMute, play: playSound } = useSoundEffects();
-  const { bursts, trigger: triggerParticles } = useParticleEffect();
   const aiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const boomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const placedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -376,19 +374,16 @@ export default function Home() {
       setMessage(`${pickRandom(BATMAN_SINK_LINES)} Sunk their ${lm.sunkShipName}!`);
       triggerBoom();
       playSound('sunk');
-      triggerParticles('sunk');
       setMoodTemporarily('player', 'confident');
       setMoodTemporarily('enemy', 'worried');
     } else if (lm?.outcome === 'hit') {
       const hitName = findShipNameAtCoord(coord, currentGame.players[1].ships);
       setMessage(hitName ? `${pickRandom(BATMAN_HIT_LINES)} Hit their ${hitName}!` : pickRandom(BATMAN_HIT_LINES));
       playSound('hit');
-      triggerParticles('hit');
       setMoodTemporarily('player', 'confident');
     } else {
       setMessage(pickRandom(BATMAN_MISS_LINES));
       playSound('miss');
-      triggerParticles('miss');
     }
 
     if (currentGame.phase === 'finished') {
@@ -421,19 +416,16 @@ export default function Home() {
           setMessage(`${pickRandom(JOKER_SINK_LINES)} Sank your ${aiLm.sunkShipName}!`);
           triggerBoom();
           playSound('sunk');
-          triggerParticles('sunk');
           setMoodTemporarily('enemy', 'confident');
           setMoodTemporarily('player', 'worried');
         } else if (aiLm?.outcome === 'hit') {
           const hitShipName = findShipNameAtCoord(aiShot, currentGame.players[0].ships);
           setMessage(hitShipName ? `${pickRandom(JOKER_HIT_LINES)} Hit your ${hitShipName}!` : pickRandom(JOKER_HIT_LINES));
           playSound('hit');
-          triggerParticles('hit');
           setMoodTemporarily('enemy', 'confident');
         } else {
           setMessage(pickRandom(JOKER_MISS_LINES));
           playSound('miss');
-          triggerParticles('miss');
         }
 
         setGame(currentGame);
@@ -471,7 +463,6 @@ export default function Home() {
           {showBoom && (
             <div className="boom-pop" aria-live="polite">BOOM!</div>
           )}
-          <ParticleCanvas bursts={bursts} />
           {aiThinking && (
             <div className="ai-thinking" aria-live="polite">
               <span className="ai-thinking-dots">
