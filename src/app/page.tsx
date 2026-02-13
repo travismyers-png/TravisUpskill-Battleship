@@ -34,11 +34,11 @@ const BATMAN_MISS_LINES = [
 ];
 
 const BATMAN_SINK_LINES = [
-  'Ship down! One less threat to Gotham.',
+  'Ship down!',
   'Sunk! The seas belong to the Bat.',
-  'Another villain\'s vessel destroyed!',
-  'Target eliminated. Moving on.',
-  'That ship won\'t terrorize Gotham again.',
+  'Another vessel destroyed!',
+  'Target eliminated.',
+  'That ship is done for.',
 ];
 
 const BATMAN_VICTORY_LINES = [
@@ -50,27 +50,27 @@ const BATMAN_VICTORY_LINES = [
 ];
 
 const JOKER_HIT_LINES = [
-  'Ha! Joker tagged you!',
-  'Why so serious? That one hurt!',
+  'Joker tagged you!',
+  'Why so serious?',
   'Joker\'s aim is no joke!',
-  'Hahaha! Boom! Right on target!',
+  'Hahaha! Boom!',
   'The Clown Prince strikes!',
 ];
 
 const JOKER_MISS_LINES = [
-  'Joker whiffed! Even clowns have off days.',
-  'Splish splash! Joker hit nothing but water.',
-  'Haha—wait, that missed? Your turn!',
-  'Joker\'s shot went wide. Lucky you!',
-  'Not even close! Your move, Bats.',
+  'Joker whiffed!',
+  'Splish splash!',
+  'Haha—missed?',
+  'Joker\'s shot went wide!',
+  'Not even close!'
 ];
 
 const JOKER_SINK_LINES = [
-  'HAHAHA! Joker sank your ship!',
-  'Down she goes! The Joker laughs!',
-  'One less toy for the Bat! Ha!',
-  'Glub glub glub! Another one bites the dust!',
-  'That\'s what you get for playing hero!',
+  'HAHAHA!',
+  'Down she goes!',
+  'One less toy for the Bat!',
+  'Glub glub glub!',
+  'That\'s what you get!',
 ];
 
 const JOKER_VICTORY_LINES = [

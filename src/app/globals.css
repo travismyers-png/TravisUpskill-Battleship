@@ -226,8 +226,13 @@ body {
   padding: 0.75rem 1.25rem;
   position: relative;
   max-width: 28rem;
+  min-height: 4.25rem;
   margin: 0 auto;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .message-bubble::after {
   content: '';
