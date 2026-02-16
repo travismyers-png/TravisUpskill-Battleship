@@ -129,6 +129,10 @@ const findShipNameAtCoord = (coord: Coord, ships: Ship[]): string | null => {
   return null;
 };
 
+const handleAiHitMessage = (aiLm: { coord: Coord }, shotLabel: string, ships: Ship[]): string => {
+  const hitName = findShipNameAtCoord(aiLm.coord, ships);
+  return hitName ? `Joker hit your ${hitName} at ${shotLabel}! Your turn.` : `Joker hit at ${shotLabel}! Your turn.`;
+};
 
 export default function Home() {
   const [game, setGame] = useState<GameState | null>(null);
