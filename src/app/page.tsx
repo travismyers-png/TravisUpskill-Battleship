@@ -547,7 +547,7 @@ export default function Home() {
       </div>
 
       {winner && (
-        <div className="victory-overlay" onClick={() => setWinner(null)} role="dialog" aria-label={`${winner === 'batman' ? 'Batman' : 'Joker'} wins`}>
+        <div className="victory-overlay" role="dialog" aria-label={`${winner === 'batman' ? 'Batman' : 'Joker'} wins`}>
           <img
             src={winner === 'batman' ? '/assets/theme/portraits/player.png' : '/assets/theme/portraits/enemy.png'}
             alt={`${winner === 'batman' ? 'Batman' : 'Joker'} portrait`}
@@ -557,7 +557,56 @@ export default function Home() {
           <p className={`victory-text mt-6${winner === 'joker' ? ' joker' : ''}`}>
             {winner === 'batman' ? 'Batman Wins!' : 'Joker Wins!'}
           </p>
-          <p className="text-sm text-gray-400 mt-4 animate-pulse">Click anywhere to dismiss</p>
+          <div className="flex gap-4 mt-8">
+            <button
+              onClick={() => {
+                setWinner(null);
+                startNewGame();
+              }}
+              className="px-6 py-3 rounded-lg font-bold uppercase tracking-wider transition-all duration-200"
+              style={{
+                background: 'var(--bat-accent)',
+                color: '#0a0e1a',
+                border: '2px solid var(--bat-accent)',
+                boxShadow: '0 4px 12px rgba(245, 197, 24, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(245, 197, 24, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 197, 24, 0.3)';
+              }}
+            >
+              Play Again
+            </button>
+            <button
+              onClick={() => {
+                setWinner(null);
+                resetState();
+                setGame(null);
+                setMessage('Select difficulty and start game');
+              }}
+              className="px-6 py-3 rounded-lg font-bold uppercase tracking-wider transition-all duration-200"
+              style={{
+                background: 'var(--joker-accent)',
+                color: '#0a0e1a',
+                border: '2px solid var(--joker-accent)',
+                boxShadow: '0 4px 12px rgba(57, 255, 20, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(57, 255, 20, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(57, 255, 20, 0.3)';
+              }}
+            >
+              Change Difficulty
+            </button>
+          </div>
         </div>
       )}
     </div>

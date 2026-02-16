@@ -37,6 +37,30 @@
   --state-preview-invalid: rgba(239, 68, 68, 0.5);
 }
 
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -129,8 +153,17 @@ body {
   justify-content: center;
   font-size: 0.875rem;
   font-weight: 700;
-  transition: background 120ms ease, box-shadow 120ms ease;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   background: var(--bp-cell-empty);
+}
+
+.bp-cell:focus-visible {
+  outline: 2px solid var(--bat-accent);
+  outline-offset: 2px;
+}
+
+.bp-cell:hover:not(.bp-cell-hit):not(.bp-cell-miss) {
+  transform: scale(1.05);
 }
 
 /* Major grid lines every 5 cells */
@@ -860,6 +893,11 @@ body {
 @keyframes portraitVictoryPulse {
   0%, 100% { filter: brightness(1.25) saturate(1.4) contrast(1.1); }
   50% { filter: brightness(1.35) saturate(1.6) contrast(1.15); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
