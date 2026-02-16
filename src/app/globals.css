@@ -132,7 +132,7 @@ body {
   pointer-events: none;
   z-index: 0;
   filter: drop-shadow(0 -2px 8px rgba(245, 197, 24, 0.15));
-  animation: skylinePan 90s linear infinite, skylineFlicker 8s ease-in-out infinite;
+  animation: none;
 }
 
 /* Blueprint board container */
