@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice">
   <defs>
     <linearGradient id="bldgShade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#4a6a8a"/>
-      <stop offset="100%" stop-color="#2a4a6a"/>
+      <stop offset="0%" stop-color="#6a8aaa"/>
+      <stop offset="100%" stop-color="#1a2a4a"/>
     </linearGradient>
   </defs>
   <g fill="url(#bldgShade)">
@@ -80,5 +80,56 @@
     <rect x="1112" y="250" width="24" height="150"/>
     <rect x="1138" y="220" width="34" height="180"/>
     <rect x="1174" y="270" width="26" height="130"/>
+  </g>
+
+  <!-- Accent window lights on key buildings -->
+  <g fill="#f5c518" opacity="0.4">
+    <!-- Wayne Tower windows -->
+    <rect x="330" y="80" width="3" height="3"/>
+    <rect x="338" y="80" width="3" height="3"/>
+    <rect x="355" y="80" width="3" height="3"/>
+    <rect x="330" y="120" width="3" height="3"/>
+    <rect x="345" y="120" width="3" height="3"/>
+    <rect x="355" y="140" width="3" height="3"/>
+    <rect x="335" y="180" width="3" height="3"/>
+    <rect x="350" y="200" width="3" height="3"/>
+    <rect x="340" y="250" width="3" height="3"/>
+    <rect x="358" y="260" width="3" height="3"/>
+
+    <!-- GCPD Tower windows -->
+    <rect x="530" y="130" width="3" height="3"/>
+    <rect x="540" y="130" width="3" height="3"/>
+    <rect x="550" y="130" width="3" height="3"/>
+    <rect x="535" y="170" width="3" height="3"/>
+    <rect x="548" y="200" width="3" height="3"/>
+    <rect x="530" y="240" width="3" height="3"/>
+    <rect x="545" y="280" width="3" height="3"/>
+
+    <!-- Arkham spire windows -->
+    <rect x="730" y="110" width="3" height="3"/>
+    <rect x="745" y="110" width="3" height="3"/>
+    <rect x="735" y="150" width="3" height="3"/>
+    <rect x="750" y="180" width="3" height="3"/>
+    <rect x="730" y="220" width="3" height="3"/>
+    <rect x="748" y="260" width="3" height="3"/>
+
+    <!-- Scattered windows on other buildings -->
+    <rect x="150" y="240" width="2" height="2"/>
+    <rect x="160" y="280" width="2" height="2"/>
+    <rect x="215" y="220" width="2" height="2"/>
+    <rect x="230" y="260" width="2" height="2"/>
+    <rect x="280" y="280" width="2" height="2"/>
+    <rect x="385" y="200" width="2" height="2"/>
+    <rect x="420" y="250" width="2" height="2"/>
+    <rect x="450" y="290" width="2" height="2"/>
+    <rect x="605" y="230" width="2" height="2"/>
+    <rect x="660" y="260" width="2" height="2"/>
+    <rect x="810" y="210" width="2" height="2"/>
+    <rect x="870" y="240" width="2" height="2"/>
+    <rect x="920" y="160" width="2" height="2"/>
+    <rect x="930" y="200" width="2" height="2"/>
+    <rect x="990" y="260" width="2" height="2"/>
+    <rect x="1090" y="230" width="2" height="2"/>
+    <rect x="1145" y="270" width="2" height="2"/>
   </g>
 </svg>
