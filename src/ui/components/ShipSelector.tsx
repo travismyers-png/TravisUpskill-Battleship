@@ -9,9 +9,15 @@ export type ShipSelectorProps = {
 };
 
 export default function ShipSelector({ ships, selectedShipIndex, onSelectShip }: ShipSelectorProps) {
+  const placedCount = ships.filter(ship => ship.coords.length > 0).length;
+  const totalShips = STANDARD_SHIPS.length;
+
   return (
     <div className="ship-selector">
       <h3 className="ship-selector-title">Select Ship</h3>
+      <div className="text-center mb-2" style={{ color: 'var(--bat-accent)', fontSize: '0.75rem', fontWeight: 600 }}>
+        {placedCount}/{totalShips} Ships Placed
+      </div>
       <div className="ship-selector-list">
         {STANDARD_SHIPS.map((def, i) => {
           const placed = ships[i].coords.length > 0;
