@@ -1,6 +1,6 @@
 import React from 'react';
 import { Coord } from '@/types/game';
-import { getShipSprite } from './ShipSprites';
+import { getShipSprite, BatmobileBattleshipSprite } from './ShipSprites';
 
 export type BoardSectionProps = {
   testId: string;
@@ -129,6 +129,71 @@ function Board({
 
   return (
     <div className="bp-board inline-block relative" onMouseLeave={onBoardLeave}>
+      {/* Preview sprite overlay – shown during setup hover */}
+      {previewCoords.length > 0 && (() => {
+        const rows = previewCoords.map((c) => c.row);
+        const cols = previewCoords.map((c) => c.col);
+        const minRow = Math.min(...rows);
+        const minCol = Math.min(...cols);
+        const isHorizontal = rows.every((r) => r === rows[0]);
+        const isVertical = cols.every((c) => c === cols[0]);
+        const length = previewCoords.length;
+
+        const spanPx = length * CELL_SIZE - INSET * 2;
+        const thickPx = CELL_SIZE - INSET * 2;
+
+        let leftPx: number;
+        let topPx: number;
+        let transform: string | undefined;
+
+        if (isVertical && !isHorizontal) {
+          leftPx = minCol * CELL_SIZE + INSET;
+          topPx = minRow * CELL_SIZE + INSET;
+          transform = `rotate(90deg) translateX(0px) translateY(-${thickPx}px)`;
+        } else {
+          leftPx = minCol * CELL_SIZE + INSET;
+          topPx = minRow * CELL_SIZE + INSET;
+          transform = undefined;
+        }
+
+        return (
+          <div
+            className="board-overlay"
+            style={{
+              position: 'absolute',
+              left: 8 + CELL_SIZE,
+              top: 8 + CELL_SIZE,
+              width: board.size * CELL_SIZE,
+              height: board.size * CELL_SIZE,
+              pointerEvents: 'none',
+              zIndex: 15,
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                left: leftPx,
+                top: topPx,
+                width: spanPx,
+                height: thickPx,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transformOrigin: 'top left',
+                ...(transform ? { transform } : {}),
+                opacity: 0.45,
+                color: previewValid
+                  ? 'var(--state-preview-valid)'
+                  : 'var(--state-preview-invalid)',
+                pointerEvents: 'none',
+              }}
+            >
+              <BatmobileBattleshipSprite />
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Ship sprite overlay – player board only, below cell content */}
       {showShips && !isEnemy && (
         <div

@@ -181,12 +181,52 @@ function CarrierSprite({ className, sunk }: ShipSpriteProps) {
   );
 }
 
+/** Batmobile Battleship – universal line-art sprite for all ship types */
+function BatmobileBattleshipSprite({ className, sunk }: ShipSpriteProps) {
+  return (
+    <svg
+      viewBox="0 0 500 100"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeDasharray={sunk ? SUNK_DASH : undefined}
+      className={className}
+      preserveAspectRatio="xMidYMid meet"
+    >
+      {/* Main hull */}
+      <path d="M10 70 L40 85 L440 85 L480 60 L460 30 L400 35 L40 40 Z" vectorEffect="non-scaling-stroke" />
+      {/* Rear wing stabilizer outer */}
+      <path d="M380 40 Q420 10 490 20 Q450 40 490 60 Q420 70 380 85" vectorEffect="non-scaling-stroke" />
+      {/* Rear wing stabilizer inner */}
+      <path d="M400 45 Q430 25 470 35 Q440 45 470 55 Q430 65 400 75" vectorEffect="non-scaling-stroke" />
+      {/* Cockpit canopy with bat-ear fins */}
+      <path d="M250 40 L245 20 L260 30 L275 20 L270 40 Z" vectorEffect="non-scaling-stroke" />
+      {/* Cockpit visor */}
+      <rect x="253" y="32" width="14" height="4" rx="1" vectorEffect="non-scaling-stroke" />
+      {/* Forward turret 1 */}
+      <circle cx="120" cy="55" r="8" vectorEffect="non-scaling-stroke" />
+      <rect x="120" y="52" width="25" height="3" rx="1" vectorEffect="non-scaling-stroke" />
+      {/* Forward turret 2 */}
+      <circle cx="180" cy="50" r="8" vectorEffect="non-scaling-stroke" />
+      <rect x="180" y="47" width="25" height="3" rx="1" vectorEffect="non-scaling-stroke" />
+      {/* Split-prong bow */}
+      <path d="M50 60 Q65 50 80 60 Q75 65 80 75 Q65 70 50 75 Q55 65 50 60" vectorEffect="non-scaling-stroke" />
+      {/* Tail light */}
+      <rect x="440" y="65" width="10" height="15" rx="2" vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+}
+
+export { BatmobileBattleshipSprite };
+
 const SPRITE_MAP: Record<string, React.FC<ShipSpriteProps>> = {
-  Destroyer: DestroyerSprite,
-  Cruiser: CruiserSprite,
-  Submarine: SubmarineSprite,
-  Battleship: BattleshipSprite,
-  Carrier: CarrierSprite,
+  Destroyer: BatmobileBattleshipSprite,
+  Cruiser: BatmobileBattleshipSprite,
+  Submarine: BatmobileBattleshipSprite,
+  Battleship: BatmobileBattleshipSprite,
+  Carrier: BatmobileBattleshipSprite,
 };
 
 /**

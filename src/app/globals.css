@@ -827,6 +827,12 @@ h1, h2 {
 .ship-selector-dots {
   display: flex;
   gap: 3px;
+  align-items: center;
+}
+
+.ship-selector-dots svg {
+  height: 14px;
+  width: auto;
 }
 
 .ship-selector-dot {

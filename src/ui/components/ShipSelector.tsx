@@ -1,6 +1,7 @@
 import React from 'react';
 import { Ship } from '@/types/game';
 import { STANDARD_SHIPS } from '@/shared/ships';
+import { BatmobileBattleshipSprite } from './ShipSprites';
 
 export type ShipSelectorProps = {
   ships: Ship[];
@@ -34,7 +35,7 @@ export default function ShipSelector({ ships, selectedShipIndex, onSelectShip }:
               <span className="ship-selector-name">{def.name}</span>
               <span className="ship-selector-dots">
                 {Array.from({ length: def.length }, (_, j) => (
-                  <span key={j} className="ship-selector-dot" />
+                  <BatmobileBattleshipSprite key={j} className="icon-blueprint" sunk={false} />
                 ))}
               </span>
               {placed && <span className="ship-selector-check" aria-label="Placed">&#x2713;</span>}
