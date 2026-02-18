@@ -306,25 +306,61 @@ h1, h2 {
 
 /* Panel card */
 .panel {
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
+  background: linear-gradient(
+    180deg,
+    rgba(17, 24, 39, 0.95) 0%,
+    rgba(11, 25, 41, 0.9) 100%
+  );
+  border: 2px solid rgba(30, 58, 95, 0.6);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(245, 197, 24, 0.06);
+  position: relative;
+}
+
+.phase-setup .panel {
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(59, 130, 246, 0.08);
+}
+.phase-playing .panel {
+  border-color: rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(239, 68, 68, 0.06);
+}
+.phase-finished .panel {
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 10px rgba(124, 58, 237, 0.08);
+}
+
+.panel select:focus {
+  border-color: var(--bat-accent);
+  box-shadow: 0 0 8px var(--bat-glow);
+}
+.panel select:hover:not(:disabled) {
+  border-color: rgba(245, 197, 24, 0.4);
+}
+.panel select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* Message bubble */
 .message-bubble {
   font-family: 'Poiret One', Arial, Helvetica, sans-serif;
-  background: #fffbe6;
-  color: #1a1a1a;
-  border: 3px solid #1a1a1a;
-  border-radius: 16px;
+  background: rgba(17, 24, 39, 0.9);
+  color: var(--bat-text);
+  border: 2px solid var(--bat-primary);
+  border-radius: 12px;
   padding: 0.75rem 1.25rem;
   position: relative;
   max-width: 28rem;
   margin: 0 auto;
   font-weight: 600;
+  box-shadow:
+    0 0 12px var(--bat-glow),
+    inset 0 0 8px rgba(30, 58, 95, 0.3);
+  text-shadow: 0 0 6px rgba(245, 197, 24, 0.15);
 }
 .message-bubble::after {
   content: '';
@@ -336,7 +372,7 @@ h1, h2 {
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 12px solid #1a1a1a;
+  border-top: 12px solid var(--bat-primary);
 }
 
 /* Sunk hit cell marker */

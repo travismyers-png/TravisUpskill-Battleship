@@ -43,12 +43,12 @@ export default function SetupPanel({
     <div className="panel mb-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-4 items-center">
-          <label className="font-semibold" style={{ color: 'var(--bat-text)' }}>Difficulty:</label>
+          <label className="font-semibold" style={{ color: 'var(--bat-text)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem' }}>Difficulty:</label>
           <select
             value={difficulty}
             onChange={(e) => onDifficultyChange(e.target.value as Difficulty)}
             className="rounded px-3 py-1"
-            style={{ background: 'var(--color-surface)', color: 'var(--bat-text)', border: '1px solid var(--color-border)' }}
+            style={{ background: 'rgba(17, 24, 39, 0.9)', color: 'var(--bat-text)', border: '2px solid var(--bat-primary)', borderRadius: '8px', padding: '0.35rem 0.75rem', boxShadow: '0 0 6px rgba(30, 58, 95, 0.3)', outline: 'none', cursor: 'pointer' }}
             disabled={difficultyDisabled}
           >
             <option value="easy">Easy</option>
@@ -61,10 +61,12 @@ export default function SetupPanel({
             onClick={onToggleMute}
             className="px-3 py-2 rounded-lg font-bold transition-all duration-200 hover:scale-105 active:scale-100"
             style={{
-              background: 'rgba(255,255,255,0.06)',
+              background: 'rgba(17, 24, 39, 0.8)',
               color: muted ? 'var(--state-miss)' : 'var(--bat-accent)',
-              border: `1px solid ${muted ? 'var(--color-border)' : 'var(--bat-accent)'}`,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              border: `2px solid ${muted ? 'rgba(71, 85, 105, 0.5)' : 'rgba(245, 197, 24, 0.4)'}`,
+              boxShadow: muted
+                ? '0 2px 8px rgba(0, 0, 0, 0.3)'
+                : '0 0 8px var(--bat-glow), 0 2px 8px rgba(0, 0, 0, 0.3)',
             }}
             title={muted ? 'Unmute sounds' : 'Mute sounds'}
             aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
@@ -78,9 +80,15 @@ export default function SetupPanel({
             onClick={onStartGame}
             className="px-6 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
             style={{ 
-              background: gameStarted ? 'var(--state-hit)' : 'var(--bat-accent)', 
+              background: gameStarted
+                ? 'linear-gradient(135deg, var(--state-hit), #b91c1c)'
+                : 'linear-gradient(135deg, var(--bat-accent), #d4a017)',
               color: '#0a0e1a',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+              border: `2px solid ${gameStarted ? 'var(--state-hit)' : 'var(--bat-accent)'}`,
+              boxShadow: gameStarted
+                ? '0 0 12px rgba(239, 68, 68, 0.35), 0 2px 8px rgba(0, 0, 0, 0.3)'
+                : '0 0 12px var(--bat-glow), 0 2px 8px rgba(0, 0, 0, 0.3)',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
             }}
             onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
@@ -125,8 +133,9 @@ export default function SetupPanel({
             style={{
               background: 'rgba(239, 68, 68, 0.15)',
               color: 'var(--state-hit)',
-              border: '2px solid rgba(239, 68, 68, 0.4)',
+              border: '2px solid rgba(239, 68, 68, 0.5)',
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              textShadow: '0 0 6px rgba(239, 68, 68, 0.3)',
             }}
             onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
@@ -142,9 +151,11 @@ export default function SetupPanel({
             onClick={onStartBattle}
             className="px-6 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
             style={{ 
-              background: 'var(--joker-accent)', 
+              background: 'linear-gradient(135deg, var(--joker-accent), #2dd40f)',
               color: '#0a0e1a',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+              border: '2px solid var(--joker-accent)',
+              boxShadow: '0 0 14px var(--joker-glow), 0 2px 8px rgba(0, 0, 0, 0.3)',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
             }}
             onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
