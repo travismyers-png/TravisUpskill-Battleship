@@ -41,13 +41,19 @@ export default function SetupPanel({
 }: SetupPanelProps) {
   return (
     <div className="panel mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-4 items-center">
-          <label className="font-semibold" style={{ color: 'var(--bat-text)' }}>Difficulty:</label>
+      {/* ── Configuration Section ── */}
+      <div
+        className="flex items-center justify-between mb-4 pb-3"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <div className="flex gap-3 items-center">
+          <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--bat-text)', opacity: 0.7 }}>
+            Difficulty
+          </label>
           <select
             value={difficulty}
             onChange={(e) => onDifficultyChange(e.target.value as Difficulty)}
-            className="rounded px-3 py-1"
+            className="rounded px-3 py-1 text-sm"
             style={{ background: 'var(--color-surface)', color: 'var(--bat-text)', border: '1px solid var(--color-border)' }}
             disabled={difficultyDisabled}
           >
@@ -56,103 +62,104 @@ export default function SetupPanel({
             <option value="hard">Hard</option>
           </select>
         </div>
-        <div className="flex gap-2 items-center">
-          <button
-            onClick={onToggleMute}
-            className="px-3 py-2 rounded-lg font-bold transition-all duration-200 hover:scale-105 active:scale-100"
-            style={{
-              background: 'rgba(255,255,255,0.06)',
-              color: muted ? 'var(--state-miss)' : 'var(--bat-accent)',
-              border: `1px solid ${muted ? 'var(--color-border)' : 'var(--bat-accent)'}`,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-            }}
-            title={muted ? 'Unmute sounds' : 'Mute sounds'}
-            aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            {muted ? '\u{1F507}' : '\u{1F50A}'}
-          </button>
-          <button
-            data-testid="start-game"
-            onClick={onStartGame}
-            className="px-6 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
-            style={{ 
-              background: gameStarted ? 'var(--state-hit)' : 'var(--bat-accent)', 
-              color: '#0a0e1a',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            {gameStarted ? 'Restart' : 'Start Game'}
-          </button>
-        </div>
+        <button
+          onClick={onToggleMute}
+          className="px-2.5 py-1.5 rounded-lg transition-all duration-200 hover:scale-105 active:scale-100"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            color: muted ? 'var(--state-miss)' : 'var(--bat-accent)',
+            border: `1px solid ${muted ? 'var(--color-border)' : 'var(--bat-accent)'}`,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+          }}
+          title={muted ? 'Unmute sounds' : 'Mute sounds'}
+          aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          {muted ? '\u{1F507}' : '\u{1F50A}'}
+        </button>
       </div>
+
+      {/* ── Feedback Section ── */}
       <MessagePanel message={message} />
-      {showOrientationToggle && (
-        <div className="flex justify-center mt-4">
+
+      {/* ── Action Section ── */}
+      <div
+        className="flex items-center justify-center gap-3 mt-4 pt-3"
+        style={{ borderTop: '1px solid rgba(255,255,255,0.06)', minHeight: '48px' }}
+      >
+        {showOrientationToggle && (
           <button
             onClick={onToggleOrientation}
-            className="flex items-center gap-3 px-5 py-2.5 rounded-lg font-bold tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-100"
             style={{
-              background: 'rgba(59, 130, 246, 0.12)',
+              background: 'rgba(59, 130, 246, 0.10)',
               color: 'var(--bat-accent)',
-              border: '2px solid var(--bp-line-major)',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              border: '1px solid var(--bp-line-major)',
             }}
-            title="Press R to rotate"
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            title={`${setupOrientation === 'horizontal' ? 'Horizontal' : 'Vertical'} — press R to rotate`}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           >
             <span
-              className="inline-block text-xl transition-transform duration-200"
+              className="inline-block transition-transform duration-200"
               style={{ transform: setupOrientation === 'horizontal' ? 'rotate(0deg)' : 'rotate(90deg)' }}
               aria-hidden="true"
             >
               ⟷
             </span>
-            <span>{setupOrientation === 'horizontal' ? 'Horizontal' : 'Vertical'}</span>
-            <kbd className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.08)', color: 'var(--bat-text)', border: '1px solid rgba(255,255,255,0.12)' }}>R</kbd>
+            <kbd className="text-[10px] px-1 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.08)', color: 'var(--bat-text)', border: '1px solid rgba(255,255,255,0.12)' }}>R</kbd>
           </button>
-        </div>
-      )}
-      {showUndo && (
-        <div className="flex justify-center mt-4">
+        )}
+
+        {showUndo && (
           <button
             onClick={onUndo}
-            className="px-5 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
+            className="px-4 py-1.5 rounded-md text-sm font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
             style={{
               background: 'rgba(239, 68, 68, 0.15)',
               color: 'var(--state-hit)',
-              border: '2px solid rgba(239, 68, 68, 0.4)',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           >
-            Undo Last Placement
+            Undo
           </button>
-        </div>
-      )}
-      {showStartBattle && (
-        <div className="flex justify-center mt-4">
+        )}
+
+        {showStartBattle && (
           <button
             data-testid="start-battle"
             onClick={onStartBattle}
-            className="px-6 py-2 rounded-lg font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
-            style={{ 
-              background: 'var(--joker-accent)', 
+            className="px-5 py-1.5 rounded-md text-sm font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
+            style={{
+              background: 'var(--joker-accent)',
               color: '#0a0e1a',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           >
             Start Battle
           </button>
-        </div>
-      )}
+        )}
+
+        <button
+          data-testid="start-game"
+          onClick={onStartGame}
+          className="px-5 py-1.5 rounded-md text-sm font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-100"
+          style={{
+            background: gameStarted ? 'var(--state-hit)' : 'var(--bat-accent)',
+            color: '#0a0e1a',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          {gameStarted ? 'Restart' : 'Start Game'}
+        </button>
+      </div>
     </div>
   );
 }
