@@ -1,67 +1,97 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="800" height="340">
   <defs>
-    <clipPath id="leftHalf">
-      <rect x="0" y="0" width="300" height="300"/>
-    </clipPath>
-    <clipPath id="rightHalf">
-      <rect x="300" y="0" width="300" height="300"/>
+    <clipPath id="batLeft">
+      <rect x="0" y="0" width="400" height="340"/>
     </clipPath>
   </defs>
 
-  <!-- Left half: Batman bat silhouette -->
-  <g clip-path="url(#leftHalf)">
+  <!-- Batman logo - iconic angular bat silhouette (clipped to left half) -->
+  <g clip-path="url(#batLeft)">
     <path d="
-      M300,150
-      C295,135 280,100 250,85
-      C240,80 225,82 220,90
-      C215,98 218,108 210,105
-      C195,98 175,70 160,55
-      C150,45 140,50 138,60
-      C136,70 140,85 130,80
-      C110,68 85,50 65,55
-      C50,58 45,75 55,90
-      C65,105 85,110 95,120
-      C105,130 115,135 130,138
-      C145,141 165,138 185,140
-      C205,142 230,145 260,148
-      C275,149 290,150 300,150
-      Z
-    " fill="#000"/>
-    <path d="
-      M300,150
-      C295,165 280,200 250,215
-      C240,220 225,218 220,210
-      C215,202 218,192 210,195
-      C195,202 175,230 160,245
-      C150,255 140,250 138,240
-      C136,230 140,215 130,220
-      C110,232 85,250 65,245
-      C50,242 45,225 55,210
-      C65,195 85,190 95,180
-      C105,170 115,165 130,162
-      C145,159 165,162 185,160
-      C205,158 230,155 260,152
-      C275,151 290,150 300,150
+      M400,95
+      L393,50 L383,88
+      C375,105 362,118 345,125
+      C325,133 305,132 290,125
+      L280,120 L278,130
+      C275,142 268,152 255,162
+      C235,175 210,182 178,185
+      C145,188 108,182 72,168
+      L20,145
+      L60,180
+      C85,198 118,210 155,216
+      C180,220 198,216 212,208
+      L222,200 L220,212
+      C218,225 228,238 245,248
+      C262,258 282,260 300,255
+      C322,248 338,238 352,225
+      L370,208 L375,218
+      C382,232 392,242 400,248
+
+      L400,248
+      C408,242 418,232 425,218
+      L430,208 L448,225
+      C462,238 478,248 500,255
+      C518,260 538,258 555,248
+      C572,238 582,225 580,212
+      L578,200 L588,208
+      C602,216 620,220 645,216
+      C682,210 715,198 740,180
+      L780,145
+      L728,168
+      C692,182 655,188 622,185
+      C590,182 565,175 545,162
+      C532,152 525,142 522,130
+      L520,120 L510,125
+      C495,132 475,133 455,125
+      C438,118 425,105 417,88
+      L407,50
       Z
     " fill="#000"/>
   </g>
 
-  <!-- Right half: Scattered HA HA HA text -->
-  <g clip-path="url(#rightHalf)">
-    <text x="320" y="60" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#39ff14" transform="rotate(-8, 320, 60)">HA</text>
-    <text x="390" y="45" font-family="Arial, sans-serif" font-weight="900" font-size="24" fill="#39ff14" opacity="0.8" transform="rotate(5, 390, 45)">HA</text>
-    <text x="480" y="70" font-family="Arial, sans-serif" font-weight="900" font-size="28" fill="#39ff14" opacity="0.9" transform="rotate(-3, 480, 70)">HA</text>
-    <text x="340" y="110" font-family="Arial, sans-serif" font-weight="900" font-size="26" fill="#39ff14" opacity="0.7" transform="rotate(10, 340, 110)">HA</text>
-    <text x="430" y="105" font-family="Arial, sans-serif" font-weight="900" font-size="36" fill="#39ff14" transform="rotate(-6, 430, 105)">HA</text>
-    <text x="530" y="120" font-family="Arial, sans-serif" font-weight="900" font-size="22" fill="#39ff14" opacity="0.75" transform="rotate(4, 530, 120)">HA</text>
-    <text x="310" y="160" font-family="Arial, sans-serif" font-weight="900" font-size="30" fill="#39ff14" opacity="0.85" transform="rotate(-12, 310, 160)">HA</text>
-    <text x="400" y="155" font-family="Arial, sans-serif" font-weight="900" font-size="20" fill="#39ff14" opacity="0.65" transform="rotate(7, 400, 155)">HA</text>
-    <text x="500" y="165" font-family="Arial, sans-serif" font-weight="900" font-size="34" fill="#39ff14" transform="rotate(-2, 500, 165)">HA</text>
-    <text x="350" y="210" font-family="Arial, sans-serif" font-weight="900" font-size="28" fill="#39ff14" opacity="0.8" transform="rotate(9, 350, 210)">HA</text>
-    <text x="460" y="200" font-family="Arial, sans-serif" font-weight="900" font-size="26" fill="#39ff14" opacity="0.9" transform="rotate(-5, 460, 200)">HA</text>
-    <text x="550" y="215" font-family="Arial, sans-serif" font-weight="900" font-size="22" fill="#39ff14" opacity="0.7" transform="rotate(3, 550, 215)">HA</text>
-    <text x="320" y="260" font-family="Arial, sans-serif" font-weight="900" font-size="24" fill="#39ff14" opacity="0.75" transform="rotate(-7, 320, 260)">HA</text>
-    <text x="420" y="250" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#39ff14" transform="rotate(6, 420, 250)">HA</text>
-    <text x="520" y="265" font-family="Arial, sans-serif" font-weight="900" font-size="20" fill="#39ff14" opacity="0.6" transform="rotate(-4, 520, 265)">HA</text>
-  </g>
+  <!-- HA text dissolving from the right edge of the bat -->
+  <!-- Dense cluster where bat breaks apart (x=380-430) -->
+  <text x="385" y="118" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#39ff14" transform="rotate(-8, 385, 118)">HA</text>
+  <text x="400" y="140" font-family="Arial, sans-serif" font-weight="900" font-size="16" fill="#39ff14" transform="rotate(5, 400, 140)">HA</text>
+  <text x="395" y="165" font-family="Arial, sans-serif" font-weight="900" font-size="13" fill="#39ff14" transform="rotate(-12, 395, 165)">HA</text>
+  <text x="410" y="125" font-family="Arial, sans-serif" font-weight="900" font-size="15" fill="#39ff14" transform="rotate(3, 410, 125)">HA</text>
+  <text x="405" y="185" font-family="Arial, sans-serif" font-weight="900" font-size="12" fill="#39ff14" transform="rotate(-6, 405, 185)">HA</text>
+  <text x="415" y="155" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#39ff14" transform="rotate(9, 415, 155)">HA</text>
+  <text x="390" y="200" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#39ff14" transform="rotate(-4, 390, 200)">HA</text>
+
+  <!-- Mid dissolve zone (x=425-500) -->
+  <text x="430" y="108" font-family="Arial, sans-serif" font-weight="900" font-size="17" fill="#39ff14" transform="rotate(-10, 430, 108)">HA</text>
+  <text x="450" y="130" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#39ff14" transform="rotate(7, 450, 130)">HA</text>
+  <text x="435" y="155" font-family="Arial, sans-serif" font-weight="900" font-size="15" fill="#39ff14" transform="rotate(-3, 435, 155)">HA</text>
+  <text x="460" y="145" font-family="Arial, sans-serif" font-weight="900" font-size="13" fill="#39ff14" transform="rotate(11, 460, 145)">HA</text>
+  <text x="445" y="175" font-family="Arial, sans-serif" font-weight="900" font-size="16" fill="#39ff14" transform="rotate(-7, 445, 175)">HA</text>
+  <text x="475" y="118" font-family="Arial, sans-serif" font-weight="900" font-size="12" fill="#39ff14" transform="rotate(4, 475, 118)">HA</text>
+  <text x="480" y="148" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#39ff14" transform="rotate(-9, 480, 148)">HA</text>
+  <text x="465" y="192" font-family="Arial, sans-serif" font-weight="900" font-size="13" fill="#39ff14" transform="rotate(6, 465, 192)">HA</text>
+  <text x="490" y="130" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#39ff14" transform="rotate(-5, 490, 130)">HA</text>
+
+  <!-- Outer scattered (x=500-580) -->
+  <text x="505" y="105" font-family="Arial, sans-serif" font-weight="900" font-size="15" fill="#39ff14" opacity="0.9" transform="rotate(-14, 505, 105)">HA</text>
+  <text x="520" y="135" font-family="Arial, sans-serif" font-weight="900" font-size="12" fill="#39ff14" opacity="0.85" transform="rotate(8, 520, 135)">HA</text>
+  <text x="510" y="162" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#39ff14" opacity="0.9" transform="rotate(-4, 510, 162)">HA</text>
+  <text x="535" y="115" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#39ff14" opacity="0.8" transform="rotate(12, 535, 115)">HA</text>
+  <text x="540" y="148" font-family="Arial, sans-serif" font-weight="900" font-size="13" fill="#39ff14" opacity="0.85" transform="rotate(-8, 540, 148)">HA</text>
+  <text x="525" y="180" font-family="Arial, sans-serif" font-weight="900" font-size="10" fill="#39ff14" opacity="0.8" transform="rotate(5, 525, 180)">HA</text>
+  <text x="555" y="108" font-family="Arial, sans-serif" font-weight="900" font-size="12" fill="#39ff14" opacity="0.75" transform="rotate(-16, 555, 108)">HA</text>
+  <text x="560" y="140" font-family="Arial, sans-serif" font-weight="900" font-size="10" fill="#39ff14" opacity="0.7" transform="rotate(6, 560, 140)">HA</text>
+  <text x="570" y="125" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#39ff14" opacity="0.65" transform="rotate(-10, 570, 125)">HA</text>
+
+  <!-- Far fading (x=580-650) -->
+  <text x="585" y="98" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#39ff14" opacity="0.6" transform="rotate(-18, 585, 98)">HA</text>
+  <text x="590" y="125" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#39ff14" opacity="0.5" transform="rotate(8, 590, 125)">HA</text>
+  <text x="600" y="110" font-family="Arial, sans-serif" font-weight="900" font-size="8" fill="#39ff14" opacity="0.45" transform="rotate(14, 600, 110)">HA</text>
+  <text x="610" y="95" font-family="Arial, sans-serif" font-weight="900" font-size="7" fill="#39ff14" opacity="0.35" transform="rotate(-12, 610, 95)">HA</text>
+
+  <!-- Bottom dissolve along lower wing -->
+  <text x="410" y="218" font-family="Arial, sans-serif" font-weight="900" font-size="13" fill="#39ff14" transform="rotate(5, 410, 218)">HA</text>
+  <text x="430" y="232" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#39ff14" transform="rotate(-6, 430, 232)">HA</text>
+  <text x="455" y="242" font-family="Arial, sans-serif" font-weight="900" font-size="12" fill="#39ff14" opacity="0.9" transform="rotate(8, 455, 242)">HA</text>
+  <text x="480" y="248" font-family="Arial, sans-serif" font-weight="900" font-size="10" fill="#39ff14" opacity="0.8" transform="rotate(-4, 480, 248)">HA</text>
+  <text x="505" y="245" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#39ff14" opacity="0.7" transform="rotate(7, 505, 245)">HA</text>
+  <text x="420" y="245" font-family="Arial, sans-serif" font-weight="900" font-size="10" fill="#39ff14" opacity="0.85" transform="rotate(-3, 420, 245)">HA</text>
 </svg>
