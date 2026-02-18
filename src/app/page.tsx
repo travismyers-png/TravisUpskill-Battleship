@@ -257,7 +257,7 @@ export default function Home() {
     transitionTimeoutRef.current = setTimeout(() => {
       setPhaseTransitioning(false);
       transitionTimeoutRef.current = null;
-    }, 650);
+    }, 1650);
   };
 
   const setMoodTemporarily = (side: 'player' | 'enemy', mood: PortraitMood, duration = 2000) => {
