@@ -87,7 +87,7 @@ export default function SetupPanel({
       >
         <button
           onClick={onToggleOrientation}
-          className="px-3 py-1.5 rounded-lg transition-all duration-200 hover:scale-105 active:scale-100"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-100"
           style={{
             background: showOrientationToggle ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
             color: 'var(--bat-accent)',
@@ -95,19 +95,21 @@ export default function SetupPanel({
             opacity: showOrientationToggle ? 1 : 0,
             pointerEvents: showOrientationToggle ? 'auto' : 'none',
           }}
-          title="Press R to rotate"
-          aria-label={`Orientation: ${setupOrientation}`}
+          title="Press R to rotate ship orientation"
+          aria-label={`Rotate ship — currently ${setupOrientation}`}
           onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           tabIndex={showOrientationToggle ? 0 : -1}
         >
           <span
-            className="inline-block text-base transition-transform duration-200"
+            className="inline-block transition-transform duration-200"
             style={{ transform: setupOrientation === 'horizontal' ? 'rotate(0deg)' : 'rotate(90deg)' }}
             aria-hidden="true"
           >
             ⟷
           </span>
+          <span>{setupOrientation === 'horizontal' ? 'Horizontal' : 'Vertical'}</span>
+          <kbd className="text-xs px-1 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.08)', color: 'var(--bat-text)', border: '1px solid rgba(255,255,255,0.12)', fontSize: '0.65rem' }}>R</kbd>
         </button>
 
         <button
