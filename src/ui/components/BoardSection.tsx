@@ -183,7 +183,12 @@ function Board({
             return (
               <div
                 key={`ship-sprite-${idx}`}
-                className={`${isSunk ? 'sprite-sunk' : ''}${placedCells && ship.coords.some(c => placedCells.has(`${c.row},${c.col}`)) ? ' ship-sprite-just-placed' : ''}`.trim() || undefined}
+                className={[
+                  isSunk ? 'sprite-sunk' : '',
+                  placedCells && ship.coords.some(c => placedCells.has(`${c.row},${c.col}`))
+                    ? (isVertical && !isHorizontal ? 'ship-sprite-just-placed-vertical' : 'ship-sprite-just-placed')
+                    : '',
+                ].filter(Boolean).join(' ') || undefined}
                 style={{
                   position: 'absolute',
                   left: leftPx,

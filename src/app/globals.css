@@ -242,6 +242,14 @@ h1, h2 {
   60%  { opacity: 1; transform: translateY(2px) scale(1.03); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
+.ship-sprite-just-placed-vertical {
+  animation: spriteSlideInVertical 500ms ease-out;
+}
+@keyframes spriteSlideInVertical {
+  0%   { opacity: 0; }
+  60%  { opacity: 1; }
+  100% { opacity: 1; }
+}
 
 /* ── Comic micro-moment keyframes ── */
 @keyframes hitPulse {
@@ -473,6 +481,9 @@ h1, h2 {
     animation: none;
   }
   .ship-sprite-just-placed {
+    animation: none;
+  }
+  .ship-sprite-just-placed-vertical {
     animation: none;
   }
   .game-wrapper::before {
