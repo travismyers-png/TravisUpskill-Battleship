@@ -457,7 +457,7 @@ export default function Home() {
   return (
     <div className={`min-h-screen p-8 game-wrapper${game ? ` phase-${game.phase}` : ''}${phaseTransitioning ? ' phase-transitioning' : ''}`} style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-center gap-4 mt-4 mb-8">
+        <div className="flex items-center justify-center gap-8 mt-4 mb-8">
           <Portrait src="/assets/theme/portraits/player.png" label="Batman" fallbackColor="#1e3a5f" mood={playerMood} />
           <h1 className="text-3xl font-bold text-center">Gotham Battleship</h1>
           <Portrait src="/assets/theme/portraits/enemy.png" label="Joker" fallbackColor="#2d1b4e" isEnemy mood={enemyMood} />
