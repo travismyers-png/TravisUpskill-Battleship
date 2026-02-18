@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300">
+  <defs>
+    <clipPath id="leftHalf">
+      <rect x="0" y="0" width="300" height="300"/>
+    </clipPath>
+    <clipPath id="rightHalf">
+      <rect x="300" y="0" width="300" height="300"/>
+    </clipPath>
+  </defs>
+
+  <!-- Left half: Batman bat silhouette -->
+  <g clip-path="url(#leftHalf)">
+    <path d="
+      M300,150
+      C295,135 280,100 250,85
+      C240,80 225,82 220,90
+      C215,98 218,108 210,105
+      C195,98 175,70 160,55
+      C150,45 140,50 138,60
+      C136,70 140,85 130,80
+      C110,68 85,50 65,55
+      C50,58 45,75 55,90
+      C65,105 85,110 95,120
+      C105,130 115,135 130,138
+      C145,141 165,138 185,140
+      C205,142 230,145 260,148
+      C275,149 290,150 300,150
+      Z
+    " fill="#000"/>
+    <path d="
+      M300,150
+      C295,165 280,200 250,215
+      C240,220 225,218 220,210
+      C215,202 218,192 210,195
+      C195,202 175,230 160,245
+      C150,255 140,250 138,240
+      C136,230 140,215 130,220
+      C110,232 85,250 65,245
+      C50,242 45,225 55,210
+      C65,195 85,190 95,180
+      C105,170 115,165 130,162
+      C145,159 165,162 185,160
+      C205,158 230,155 260,152
+      C275,151 290,150 300,150
+      Z
+    " fill="#000"/>
+  </g>
+
+  <!-- Right half: Scattered HA HA HA text -->
+  <g clip-path="url(#rightHalf)">
+    <text x="320" y="60" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#39ff14" transform="rotate(-8, 320, 60)">HA</text>
+    <text x="390" y="45" font-family="Arial, sans-serif" font-weight="900" font-size="24" fill="#39ff14" opacity="0.8" transform="rotate(5, 390, 45)">HA</text>
+    <text x="480" y="70" font-family="Arial, sans-serif" font-weight="900" font-size="28" fill="#39ff14" opacity="0.9" transform="rotate(-3, 480, 70)">HA</text>
+    <text x="340" y="110" font-family="Arial, sans-serif" font-weight="900" font-size="26" fill="#39ff14" opacity="0.7" transform="rotate(10, 340, 110)">HA</text>
+    <text x="430" y="105" font-family="Arial, sans-serif" font-weight="900" font-size="36" fill="#39ff14" transform="rotate(-6, 430, 105)">HA</text>
+    <text x="530" y="120" font-family="Arial, sans-serif" font-weight="900" font-size="22" fill="#39ff14" opacity="0.75" transform="rotate(4, 530, 120)">HA</text>
+    <text x="310" y="160" font-family="Arial, sans-serif" font-weight="900" font-size="30" fill="#39ff14" opacity="0.85" transform="rotate(-12, 310, 160)">HA</text>
+    <text x="400" y="155" font-family="Arial, sans-serif" font-weight="900" font-size="20" fill="#39ff14" opacity="0.65" transform="rotate(7, 400, 155)">HA</text>
+    <text x="500" y="165" font-family="Arial, sans-serif" font-weight="900" font-size="34" fill="#39ff14" transform="rotate(-2, 500, 165)">HA</text>
+    <text x="350" y="210" font-family="Arial, sans-serif" font-weight="900" font-size="28" fill="#39ff14" opacity="0.8" transform="rotate(9, 350, 210)">HA</text>
+    <text x="460" y="200" font-family="Arial, sans-serif" font-weight="900" font-size="26" fill="#39ff14" opacity="0.9" transform="rotate(-5, 460, 200)">HA</text>
+    <text x="550" y="215" font-family="Arial, sans-serif" font-weight="900" font-size="22" fill="#39ff14" opacity="0.7" transform="rotate(3, 550, 215)">HA</text>
+    <text x="320" y="260" font-family="Arial, sans-serif" font-weight="900" font-size="24" fill="#39ff14" opacity="0.75" transform="rotate(-7, 320, 260)">HA</text>
+    <text x="420" y="250" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#39ff14" transform="rotate(6, 420, 250)">HA</text>
+    <text x="520" y="265" font-family="Arial, sans-serif" font-weight="900" font-size="20" fill="#39ff14" opacity="0.6" transform="rotate(-4, 520, 265)">HA</text>
+  </g>
+</svg>

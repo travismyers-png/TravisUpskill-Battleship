@@ -96,16 +96,19 @@ h1, h2 {
 }
 .game-wrapper.phase-transitioning::before {
   opacity: 1;
-  background:
-    linear-gradient(135deg, transparent 48%, rgba(245, 197, 24, 0.35) 49%, rgba(245, 197, 24, 0.35) 51%, transparent 52%),
-    linear-gradient(-135deg, transparent 48%, rgba(57, 255, 20, 0.2) 49%, rgba(57, 255, 20, 0.2) 51%, transparent 52%);
-  animation: panelWipe 600ms ease-out forwards;
+  background-image: url('/assets/theme/bat-joker-split.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: clamp(300px, 40vw, 500px);
+  filter: drop-shadow(0 0 20px rgba(245, 197, 24, 0.4)) 
+          drop-shadow(0 0 20px rgba(57, 255, 20, 0.3));
+  animation: splitFlash 600ms ease-out forwards;
 }
-@keyframes panelWipe {
-  0%   { clip-path: inset(0 100% 0 0); opacity: 1; }
-  40%  { clip-path: inset(0 0 0 0); opacity: 1; }
-  70%  { clip-path: inset(0 0 0 0); opacity: 0.6; }
-  100% { clip-path: inset(0 0 0 100%); opacity: 0; }
+@keyframes splitFlash {
+  0%   { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+  25%  { transform: scale(1.15) rotate(2deg); opacity: 1; }
+  50%  { transform: scale(1.0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.0) rotate(0deg); opacity: 0; }
 }
 
 /* ── Comic panel border for phase changes ── */
@@ -490,7 +493,8 @@ h1, h2 {
     display: none;
   }
   .game-wrapper.phase-transitioning::before {
-    display: none;
+    animation: none;
+    opacity: 0;
   }
   .portrait-mood {
     transition: none;
