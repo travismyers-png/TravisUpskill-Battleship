@@ -96,10 +96,10 @@ h1, h2 {
 }
 .game-wrapper.phase-transitioning::before {
   opacity: 1;
-  background-image: url('/assets/theme/bat-joker-split.svg');
+  background-image: url('/assets/theme/bat-joker-split.png');
   background-position: center;
   background-repeat: no-repeat;
-  background-size: clamp(300px, 40vw, 500px);
+  background-size: clamp(350px, 50vw, 650px);
   filter: drop-shadow(0 0 20px rgba(245, 197, 24, 0.4)) 
           drop-shadow(0 0 20px rgba(57, 255, 20, 0.3));
   animation: splitFlash 600ms ease-out forwards;
