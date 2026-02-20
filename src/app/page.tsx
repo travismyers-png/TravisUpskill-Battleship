@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { createNewGame, canPlay, getNextUnplacedShipIndex, applyAction } from '@/engine/game';
 import { canPlaceShip } from '@/engine/placement';
 import { getNextShot as getEasyShot } from '@/ai/easy';
@@ -197,6 +197,38 @@ export default function Home() {
 
   const isPlayingPhase = game?.phase === 'playing' && game.currentPlayerIndex === 0;
   const boardSize = game?.players[0].board.size ?? 10;
+
+  const boardsContainerRef = useRef<HTMLDivElement>(null);
+  const [cellSize, setCellSize] = useState(32);
+  const gridCols = useMemo(() => boardSize + 1, [boardSize]);
+
+  const gameStarted = !!game;
+
+  useEffect(() => {
+    const el = boardsContainerRef.current;
+    if (!el) return;
+
+    const computeCellSize = () => {
+      const containerWidth = el.getBoundingClientRect().width;
+      if (containerWidth === 0) return;
+      const boardPadding = 20;
+      const isSideBySide = containerWidth >= 700;
+      if (isSideBySide) {
+        const gap = 48;
+        const perBoard = (containerWidth - gap) / 2 - boardPadding;
+        const size = Math.floor(perBoard / gridCols);
+        setCellSize(Math.max(16, Math.min(size, 36)));
+      } else {
+        const perBoard = containerWidth - boardPadding;
+        const size = Math.floor(perBoard / gridCols);
+        setCellSize(Math.max(16, Math.min(size, 36)));
+      }
+    };
+
+    const observer = new ResizeObserver(computeCellSize);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [gridCols, gameStarted]);
 
   useEffect(() => {
     if (!isSetupPhase && !isPlayingPhase) return;
@@ -509,8 +541,8 @@ export default function Home() {
 
         {game && (
           <>
-            <div className="flex justify-center gap-12">
-              <div className="w-[500px] flex flex-col items-center">
+            <div ref={boardsContainerRef} className="flex flex-wrap justify-center items-start gap-6 lg:gap-12">
+              <div className="flex-1 basis-[300px] max-w-[500px] flex flex-col items-center">
                 <BoardSection
                   testId="player-board"
                   title="The Batcave"
@@ -526,6 +558,7 @@ export default function Home() {
                   onBoardLeave={isSetupActive ? () => setHoverCoord(null) : undefined}
                   cursorCoord={isSetupActive ? cursorCoord : null}
                   placedCells={placedCells}
+                  cellSize={cellSize}
                 />
                 {game.phase === 'setup' && !allShipsPlaced && (
                   <ShipSelector
@@ -536,7 +569,7 @@ export default function Home() {
                 )}
                 {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[1].board)} side="batman" />}
               </div>
-              <div className="w-[500px] flex flex-col items-center">
+              <div className="flex-1 basis-[300px] max-w-[500px] flex flex-col items-center">
                 <BoardSection
                   testId="enemy-board"
                   title="Clown Cartel"
@@ -548,6 +581,7 @@ export default function Home() {
                   showShipsRemaining={game.phase !== 'setup'}
                   isEnemy={true}
                   cursorCoord={isPlayingPhase ? cursorCoord : null}
+                  cellSize={cellSize}
                 />
                 {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[0].board)} side="joker" />}
               </div>

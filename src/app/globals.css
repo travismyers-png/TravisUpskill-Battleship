@@ -154,8 +154,8 @@ h1, h2 {
 
 /* Blueprint cell base */
 .bp-cell {
-  width: 2rem;
-  height: 2rem;
+  width: var(--cell-size, 2rem);
+  height: var(--cell-size, 2rem);
   border: 1px solid var(--bp-line);
   display: flex;
   align-items: center;
@@ -306,8 +306,8 @@ h1, h2 {
 
 /* Grid labels */
 .bp-label {
-  width: 2rem;
-  height: 2rem;
+  width: var(--cell-size, 2rem);
+  height: var(--cell-size, 2rem);
   display: flex;
   align-items: center;
   justify-content: center;
