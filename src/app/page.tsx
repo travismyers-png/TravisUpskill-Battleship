@@ -198,6 +198,31 @@ export default function Home() {
   const isPlayingPhase = game?.phase === 'playing' && game.currentPlayerIndex === 0;
   const boardSize = game?.players[0].board.size ?? 10;
 
+  const [cellSize, setCellSize] = useState(32);
+  useEffect(() => {
+    const computeCellSize = () => {
+      const vw = window.innerWidth;
+      const labelCol = 1;
+      const gridCols = boardSize + labelCol;
+      const padding = 8 * 2;
+      const borderAndExtra = 4;
+      if (vw >= 1100) {
+        const gap = 48;
+        const available = Math.min(vw - 64, 1152) - gap;
+        const perBoard = available / 2 - padding - borderAndExtra;
+        const size = Math.floor(perBoard / gridCols);
+        setCellSize(Math.max(20, Math.min(size, 32)));
+      } else {
+        const available = vw - 32 - padding - borderAndExtra;
+        const size = Math.floor(available / gridCols);
+        setCellSize(Math.max(20, Math.min(size, 32)));
+      }
+    };
+    computeCellSize();
+    window.addEventListener('resize', computeCellSize);
+    return () => window.removeEventListener('resize', computeCellSize);
+  }, [boardSize]);
+
   useEffect(() => {
     if (!isSetupPhase && !isPlayingPhase) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -509,8 +534,8 @@ export default function Home() {
 
         {game && (
           <>
-            <div className="flex justify-center gap-12">
-              <div className="w-[500px] flex flex-col items-center">
+            <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-6 lg:gap-12">
+              <div className="w-full max-w-[500px] flex flex-col items-center">
                 <BoardSection
                   testId="player-board"
                   title="The Batcave"
@@ -526,6 +551,7 @@ export default function Home() {
                   onBoardLeave={isSetupActive ? () => setHoverCoord(null) : undefined}
                   cursorCoord={isSetupActive ? cursorCoord : null}
                   placedCells={placedCells}
+                  cellSize={cellSize}
                 />
                 {game.phase === 'setup' && !allShipsPlaced && (
                   <ShipSelector
@@ -536,7 +562,7 @@ export default function Home() {
                 )}
                 {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[1].board)} side="batman" />}
               </div>
-              <div className="w-[500px] flex flex-col items-center">
+              <div className="w-full max-w-[500px] flex flex-col items-center">
                 <BoardSection
                   testId="enemy-board"
                   title="Clown Cartel"
@@ -548,6 +574,7 @@ export default function Home() {
                   showShipsRemaining={game.phase !== 'setup'}
                   isEnemy={true}
                   cursorCoord={isPlayingPhase ? cursorCoord : null}
+                  cellSize={cellSize}
                 />
                 {game.phase !== 'setup' && <StatsSectionPanel stats={computeStats(game.players[0].board)} side="joker" />}
               </div>

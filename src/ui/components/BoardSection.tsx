@@ -18,6 +18,7 @@ export type BoardSectionProps = {
   isEnemy?: boolean;
   cursorCoord?: Coord | null;
   placedCells?: Set<string>;
+  cellSize?: number;
 };
 
 export default function BoardSection({
@@ -36,6 +37,7 @@ export default function BoardSection({
   isEnemy = false,
   cursorCoord,
   placedCells,
+  cellSize = 32,
 }: BoardSectionProps) {
   return (
     <div data-testid={testId}>
@@ -58,6 +60,7 @@ export default function BoardSection({
         isEnemy={isEnemy}
         cursorCoord={cursorCoord}
         placedCells={placedCells}
+        cellSize={cellSize}
       />
     </div>
   );
@@ -87,6 +90,7 @@ function Board({
   isEnemy = false,
   cursorCoord,
   placedCells,
+  cellSize = 32,
 }: {
   board: { size: number; cells: string[][] };
   ships: { name?: string; coords: Coord[] }[];
@@ -100,8 +104,9 @@ function Board({
   isEnemy?: boolean;
   cursorCoord?: Coord | null;
   placedCells?: Set<string>;
+  cellSize?: number;
 }) {
-  const CELL_SIZE = 32; // 2rem = 32px
+  const CELL_SIZE = cellSize;
   const INSET = 3; // px inset so sprites don't touch grid lines
   const previewSet = new Set(previewCoords.map((c) => `${c.row},${c.col}`));
 
@@ -128,7 +133,7 @@ function Board({
   );
 
   return (
-    <div className="bp-board inline-block relative" onMouseLeave={onBoardLeave}>
+    <div className="bp-board inline-block relative" onMouseLeave={onBoardLeave} style={{ '--cell-size': `${CELL_SIZE}px` } as React.CSSProperties}>
       {/* Preview sprite overlay – shown during setup hover */}
       {previewCoords.length > 0 && (() => {
         const rows = previewCoords.map((c) => c.row);
@@ -200,7 +205,6 @@ function Board({
           className="board-overlay"
           style={{
             position: 'absolute',
-            // offset by padding (0.5rem=8px) + label row/col (2rem=32px)
             left: 8 + CELL_SIZE,
             top: 8 + CELL_SIZE,
             width: board.size * CELL_SIZE,
@@ -274,7 +278,7 @@ function Board({
           })}
         </div>
       )}
-      <div className="grid" style={{ gridTemplateColumns: `2rem repeat(${board.size}, 2rem)`, gap: 0 }}>
+      <div className="grid" style={{ gridTemplateColumns: `${CELL_SIZE}px repeat(${board.size}, ${CELL_SIZE}px)`, gap: 0 }}>
         {/* Top-left empty corner */}
         <div className="bp-label" />
         {/* Column headers 1-10 */}
