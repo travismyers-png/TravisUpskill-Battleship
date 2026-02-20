@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback } from 'react';
 
-export type SoundType = 'hit' | 'miss' | 'sunk' | 'victory' | 'defeat';
+export type SoundType = 'hit' | 'miss' | 'sunk' | 'victory' | 'defeat' | 'doubleMiss';
 
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
@@ -59,6 +59,16 @@ export function useSoundEffects() {
     source.start();
   }, [getCtx]);
 
+  const playFile = useCallback((url: string, volume = 0.5) => {
+    try {
+      const audio = new Audio(url);
+      audio.volume = volume;
+      audio.play();
+    } catch {
+      // Audio playback not available
+    }
+  }, []);
+
   const play = useCallback((sound: SoundType) => {
     if (muted) return;
     try {
@@ -87,11 +97,14 @@ export function useSoundEffects() {
             setTimeout(() => playTone(freq, 0.4, 'triangle', 0.1), i * 150);
           });
           break;
+        case 'doubleMiss':
+          playFile('/assets/theme/Batman%20Where%20are%20they.m4a', 0.5);
+          break;
       }
     } catch {
       // Audio API not available
     }
-  }, [muted, playTone, playNoise]);
+  }, [muted, playTone, playNoise, playFile]);
 
   const toggleMute = useCallback(() => {
     setMuted(prev => !prev);

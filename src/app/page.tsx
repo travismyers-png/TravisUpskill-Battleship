@@ -154,6 +154,7 @@ export default function Home() {
   const [selectedShipHistory, setSelectedShipHistory] = useState<number[]>([]);
 
   const { muted, toggleMute, play: playSound } = useSoundEffects();
+  const consecutiveBatmanMissesRef = useRef(0);
   const aiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const boomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const placedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -305,6 +306,7 @@ export default function Home() {
     setEnemyMood('neutral');
     setSetupHistory([]);
     setSelectedShipHistory([]);
+    consecutiveBatmanMissesRef.current = 0;
     setMessage('Place your ships to begin.');
   };
 
@@ -375,19 +377,27 @@ export default function Home() {
     const lm = currentGame.lastMove;
     
     if (lm?.outcome === 'sunk') {
+      consecutiveBatmanMissesRef.current = 0;
       setMessage(`${pickRandom(BATMAN_SINK_LINES)} Sunk their ${lm.sunkShipName}!`);
       triggerBoom();
       playSound('sunk');
       setMoodTemporarily('player', 'confident');
       setMoodTemporarily('enemy', 'worried');
     } else if (lm?.outcome === 'hit') {
+      consecutiveBatmanMissesRef.current = 0;
       const hitName = findShipNameAtCoord(coord, currentGame.players[1].ships);
       setMessage(hitName ? `${pickRandom(BATMAN_HIT_LINES)} Hit their ${hitName}!` : pickRandom(BATMAN_HIT_LINES));
       playSound('hit');
       setMoodTemporarily('player', 'confident');
     } else {
+      consecutiveBatmanMissesRef.current += 1;
+      if (consecutiveBatmanMissesRef.current >= 3) {
+        playSound('doubleMiss');
+        consecutiveBatmanMissesRef.current = 0;
+      } else {
+        playSound('miss');
+      }
       setMessage(pickRandom(BATMAN_MISS_LINES));
-      playSound('miss');
     }
 
     if (currentGame.phase === 'finished') {
